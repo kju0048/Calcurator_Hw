@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:id="@+id/calgroup">
+        <item android:id="@+id/menu_defCal"
+            android:title="일반계산기"
+            android:icon="@drawable/calimg"/>
+        <item android:id="@+id/menu_proCal"
+            android:title="프로그래머계산기"
+            android:icon="@drawable/calimg"/>
+    </group>
+    <group android:id="@+id/transgroup">
+        <item android:id="@+id/menu_tempTrans"
+            android:title="온도변환기"
+            android:icon="@drawable/calimg"/>
+        <item android:id="@+id/menu_lengTrans"
+            android:title="길이변환기"
+            android:icon="@drawable/calimg"/>
+    </group>
+</menu>

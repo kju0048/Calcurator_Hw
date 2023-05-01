@@ -1,0 +1,19 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.Calculator" parent="Theme.AppCompat.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    </style>
+
+    <style name="Theme.Calculator" parent="Base.Theme.Calculator" />
+
+    <style name ="Theme.Calculator.Toolbar">
+        <!-- 툴바 배경색 -->
+        <item name="android:background">#2A3349</item>
+        <!-- 제목글씨 색상 -->
+        <item name="titleTextColor">@color/white</item>
+        <!-- 툴바이ㅡ 메뉴 색상 -->
+        <item name="colorControlNormal">@color/white</item>
+    </style>
+
+</resources>
