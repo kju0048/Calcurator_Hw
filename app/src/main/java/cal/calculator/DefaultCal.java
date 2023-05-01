@@ -33,6 +33,8 @@ public class DefaultCal extends AppCompatActivity {
     List<String> infixList; // 중위 표기
     List<String> postfixList; // 후위 표기
 
+    Boolean resultSet = false; // 마지막 동작이 = 인지
+
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     ActionBarDrawerToggle drawerToggle;
@@ -87,6 +89,11 @@ public class DefaultCal extends AppCompatActivity {
     }
 
     public void btClick(View v) {
+        int gId = v.getId();
+        if(resultSet && gId == R.id.bt_point){
+            Toast.makeText(getApplicationContext(), ". 을 사용할 수 없습니다.", Toast.LENGTH_SHORT).show();
+            return;
+        }
         if (!checkList.isEmpty() && checkList.get(checkList.size() - 1) == -1) {
             tv_Expression.setText(tv_Result.getText().toString());
             checkList.clear();
@@ -94,8 +101,9 @@ public class DefaultCal extends AppCompatActivity {
             checkList.add(2); // .
             checkList.add(1); // 소수점
             tv_Result.setText("");
+            resultSet = false;
         }
-        int gId = v.getId();
+
         if (gId == R.id.bt_1) addNumber("1");
         else if (gId == R.id.bt_2) addNumber("2");
         else if (gId == R.id.bt_3) addNumber("3");
@@ -226,16 +234,20 @@ public class DefaultCal extends AppCompatActivity {
         }
 
         String[] ex = tv_Expression.getText().toString().split(" ");
-        String[] fex = ex[0].split("");
-        if(!isNumber(fex[0])){
-
-        }
+        String[] fex = ex[ex.length -1].split("");
 
         List<String> li = new ArrayList<String>();
         Collections.addAll(li, ex);
         String temps = li.remove(li.size() - 1);
 
-        li.add("-" + temps);
+        if(!isNumber(fex[0])){
+            List<String> tli = new ArrayList<String>();
+            Collections.addAll(tli, fex);
+            tli.remove(0);
+            li.add(TextUtils.join("", tli));
+        }
+        else
+            li.add("-" + temps);
         tv_Expression.setText(TextUtils.join(" ", li));
 
     }
@@ -353,8 +365,12 @@ public class DefaultCal extends AppCompatActivity {
             }
             i++;
         }
-        tv_Result.setText(postfixList.remove(0));
+        Double temp = Double.parseDouble(postfixList.remove(0).toString());
+        temp = Double.valueOf(Math.round(temp * 100000) / 100000.0);
+        tv_Result.setText(temp.toString());
+        //tv_Result.setText(postfixList.remove(0));
         infixList.clear();
+        resultSet = true;
     }
 
 }
