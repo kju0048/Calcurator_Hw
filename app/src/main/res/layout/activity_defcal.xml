@@ -132,7 +132,6 @@
                             android:text="1/x"
                             android:layout_margin="5dp"
                             android:textColor="@color/black"
-                            android:textStyle="italic"
                             android:onClick="fracClick"
                             android:textSize="18sp" />
 
@@ -336,7 +335,6 @@
                             android:layout_margin="5dp"
                             android:textColor="@color/black"
                             android:onClick="negaClick"
-                            android:textStyle="italic"
                             android:textSize="18sp" />
 
                         <Button
