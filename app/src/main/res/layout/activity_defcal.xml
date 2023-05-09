@@ -19,7 +19,6 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:theme="@style/Theme.Calculator.Toolbar">
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -85,6 +84,7 @@
                             android:text="PIC"
                             android:layout_margin="5dp"
                             android:textColor="@color/white"
+                            android:onClick="btPic"
                             android:textSize="18sp" />
 
                         <Button
@@ -143,9 +143,7 @@
                             android:text="x^2"
                             android:layout_margin="5dp"
                             android:textColor="@color/black"
-                            android:enabled="false"
-                            android:clickable="false"
-                            android:textStyle="italic"
+                            android:onClick="btxx"
                             android:textSize="18sp" />
 
                         <Button
@@ -156,9 +154,7 @@
                             android:text="√x"
                             android:layout_margin="5dp"
                             android:textColor="@color/black"
-                            android:enabled="false"
-                            android:clickable="false"
-                            android:textStyle="italic"
+                            android:onClick="btRoot"
                             android:textSize="18sp" />
 
                         <Button
@@ -221,12 +217,10 @@
                             android:onClick="btClick"
                             android:textSize="18sp" />
                     </TableRow>
-
                     <TableRow
                         android:layout_width="wrap_content"
                         android:layout_height="0dp"
                         android:layout_weight="1">
-
                         <Button
                             android:id="@+id/bt_4"
                             android:layout_width="wrap_content"
@@ -320,7 +314,6 @@
                             android:onClick="btClick"
                             android:textSize="18sp" />
                     </TableRow>
-
                     <TableRow
                         android:layout_width="wrap_content"
                         android:layout_height="0dp"

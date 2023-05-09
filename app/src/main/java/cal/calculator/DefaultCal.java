@@ -8,23 +8,43 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 
 public class DefaultCal extends AppCompatActivity {
+
+    //SERVER
+    private Handler mHandler;
+    private Socket socket;
+    private DataOutputStream dos;
+    private DataInputStream dis;
+    private static String SERVER_IP = "192.168.219.102";
+    private static int SERVER_PORT = 8080;
+
+    private static int BUF_SIZE = 100;
+
 
     TextView tv_Expression;
     TextView tv_Result;
@@ -35,9 +55,13 @@ public class DefaultCal extends AppCompatActivity {
 
     Boolean resultSet = false; // 마지막 동작이 = 인지
 
+
+
+
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     ActionBarDrawerToggle drawerToggle;
+
 
 
     @Override
@@ -78,6 +102,59 @@ public class DefaultCal extends AppCompatActivity {
 
     }
 
+    public void btPic(View v){
+        connect();
+    }
+
+    void connect(){
+        mHandler = new Handler();
+        Log.w("connect","연결 하는중");
+        // 받아오는거
+        Thread checkUpdate = new Thread() {
+            public void run() {
+                // ip받기
+                String newip = SERVER_IP;
+
+                // 서버 접속
+                try {
+                    socket = new Socket(newip, SERVER_PORT);
+                    Log.w("서버 접속됨", "서버 접속됨");
+                } catch (IOException e1) {
+                    Log.w("서버접속못함", "서버접속못함");
+                    e1.printStackTrace();
+                }
+
+                Log.w("edit 넘어가야 할 값 : ","안드로이드에서 서버로 연결요청");
+
+                try {
+                    dos = new DataOutputStream(socket.getOutputStream());   // output에 보낼꺼 넣음
+                    dis = new DataInputStream(socket.getInputStream());     // input에 받을꺼 넣어짐
+                    dos.writeUTF("안드로이드에서 서버로 연결요청");
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.w("버퍼", "버퍼생성 잘못됨");
+                }
+                Log.w("버퍼","버퍼생성 잘됨");
+
+                // 서버에서 계속 받아옴 - 한번은 문자, 한번은 숫자를 읽음. 순서 맞춰줘야 함.
+                try {
+                    String line = "";
+                    int line2;
+                    while(true) {
+                        line = (String)dis.readUTF();
+                        line2 = (int)dis.read();
+                        Log.w("서버에서 받아온 값 ",""+line);
+                        Log.w("서버에서 받아온 값 ",""+line2);
+                    }
+                }catch (Exception e){
+
+                }
+            }
+        };
+        // 소켓 접속 시도, 버퍼생성
+        checkUpdate.start();
+    }
 
     void init() {
         tv_Expression = findViewById(R.id.tv_expression);
@@ -120,6 +197,7 @@ public class DefaultCal extends AppCompatActivity {
         else if (gId == R.id.bt_add) addOperator("+");
         else if (gId == R.id.bt_sub) addOperator("-");
     }
+
     public void clearClick (View v){
         infixList.clear();
         checkList.clear();
@@ -142,12 +220,14 @@ public class DefaultCal extends AppCompatActivity {
             tv_Expression.setText(TextUtils.join(" ", li));
         }
         tv_Result.setText("");
+        resultSet = false;
     }
 
     // 숫자 버튼
     void addNumber (String str){
         checkList.add(1); // 숫자가 들어왔는지 체크리스트에 표시
         tv_Expression.append(str); // UI
+        resultSet = false;
     }
 
     void addPoint (String str){
@@ -170,6 +250,7 @@ public class DefaultCal extends AppCompatActivity {
         }
         checkList.add(2);
         tv_Expression.append(str); // UI
+        resultSet = false;
     }
 
     // 연산자 버튼
@@ -187,17 +268,16 @@ public class DefaultCal extends AppCompatActivity {
 
                 li.add(li.remove(li.size() - 1) + " " + str + " ");
                 tv_Expression.setText(TextUtils.join(" ", li));
-
+                resultSet = false;
                 return;
             }
             checkList.add(0);
             tv_Expression.append(" " + str + " ");
+            resultSet = false;
         } catch (Exception e) {
             Log.e("addOperator", e.toString());
         }
-
     }
-
 
     // 결과 버튼
     public void btResult (View v){
@@ -220,12 +300,14 @@ public class DefaultCal extends AppCompatActivity {
                 tv_Expression.setText(rtemp);
                 tv_Result.setText("");
                 checkList.add(1);
+                resultSet = false;
                 return;
             }
 
             tv_Expression.setText("-" + tv_Result.getText());
             tv_Result.setText("");
             checkList.add(1);
+            resultSet = false;
             return;
         }
         if (tv_Expression.length() == 0 || checkList.get(checkList.size() - 1) != 1) {
@@ -249,7 +331,67 @@ public class DefaultCal extends AppCompatActivity {
         else
             li.add("-" + temps);
         tv_Expression.setText(TextUtils.join(" ", li));
+        resultSet = true;
 
+    }
+
+    public void btxx(View v){
+        if(tv_Result.length() != 0){
+            double dtemp = Double.parseDouble(tv_Result.getText().toString()) * Double.parseDouble(tv_Result.getText().toString());
+            tv_Expression.setText(String.valueOf(dtemp));
+            tv_Result.setText("");
+            checkList.add(1);
+            resultSet = false;
+            return;
+        }
+
+        if (tv_Expression.length() == 0 || checkList.get(checkList.size() - 1) != 1) {
+            Toast.makeText(getApplicationContext(), "마지막 입력값이 숫자여야 사용가능합니다.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String[] ex = tv_Expression.getText().toString().split(" ");
+        List<String> li = new ArrayList<String>();
+        Collections.addAll(li, ex);
+        String temps = li.remove(li.size() - 1);
+        double dtemps = Double.parseDouble(temps) * Double.parseDouble(temps);
+        if (dtemps % 1 == 0){
+            li.add(String.valueOf(Integer.parseInt(temps) * Integer.parseInt(temps)));
+        } else{
+            li.add(String.valueOf(dtemps));
+        }
+        tv_Expression.setText(TextUtils.join(" ", li));
+        resultSet = false;
+    }
+
+
+    public void btRoot(View v){
+        if(tv_Result.length() != 0){
+            double dtemp = Double.parseDouble(tv_Result.getText().toString()) * Double.parseDouble(tv_Result.getText().toString());
+            tv_Expression.setText(String.valueOf(dtemp));
+            tv_Result.setText("");
+            checkList.add(1);
+            resultSet = false;
+            return;
+        }
+
+        if (tv_Expression.length() == 0 || checkList.get(checkList.size() - 1) != 1) {
+            Toast.makeText(getApplicationContext(), "마지막 입력값이 숫자여야 사용가능합니다.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String[] ex = tv_Expression.getText().toString().split(" ");
+        List<String> li = new ArrayList<String>();
+        Collections.addAll(li, ex);
+        String temps = li.remove(li.size() - 1);
+        double dtemps = Double.parseDouble(temps) * Double.parseDouble(temps);
+        if (dtemps % 1 == 0){
+            li.add(String.valueOf(Integer.parseInt(temps) * Integer.parseInt(temps)));
+        } else{
+            li.add(String.valueOf(dtemps));
+        }
+        tv_Expression.setText(TextUtils.join(" ", li));
+        resultSet = false;
     }
 
 
@@ -259,6 +401,7 @@ public class DefaultCal extends AppCompatActivity {
             tv_Expression.setText("1 / " + tv_Result.getText());
             tv_Result.setText("");
             checkList.add(1);
+            resultSet = false;
             return;
         }
 
@@ -275,6 +418,7 @@ public class DefaultCal extends AppCompatActivity {
 
         li.add("1 / " + temps);
         tv_Expression.setText(TextUtils.join(" ", li));
+        resultSet = false;
     }
 
     // 연산자 가중치
@@ -313,7 +457,7 @@ public class DefaultCal extends AppCompatActivity {
             // 피연산자
             if (isNumber(item)) postfixList.add(String.valueOf(Double.parseDouble(item)));
                 // 연산자
-            else {
+            else { // 5 + 3 * sqrt(56) +
                 if (operatorStack.isEmpty()) operatorStack.push(item);
                 else {
                     if (getWeight(operatorStack.peek()) >= getWeight(item))
@@ -365,9 +509,13 @@ public class DefaultCal extends AppCompatActivity {
             }
             i++;
         }
-        Double temp = Double.parseDouble(postfixList.remove(0).toString());
+        double temp = Double.parseDouble(postfixList.remove(0));
         temp = Double.valueOf(Math.round(temp * 100000) / 100000.0);
-        tv_Result.setText(temp.toString());
+        if (temp % 1 == 0){
+            tv_Result.setText(Integer.toString((int)temp));
+        } else{
+            tv_Result.setText(Double.toString(temp));
+        }
         //tv_Result.setText(postfixList.remove(0));
         infixList.clear();
         resultSet = true;
