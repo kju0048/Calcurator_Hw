@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="temp_array">
-        <item>섭씨</item>
         <item>화씨</item>
+        <item>섭씨</item>
         <item>절대 온도</item>
     </string-array>
 </resources>
