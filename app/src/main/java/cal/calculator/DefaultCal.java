@@ -332,7 +332,6 @@ public class DefaultCal extends AppCompatActivity {
             li.add("-" + temps);
         tv_Expression.setText(TextUtils.join(" ", li));
         resultSet = true;
-
     }
 
     public void btxx(View v){
