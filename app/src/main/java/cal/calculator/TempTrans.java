@@ -180,14 +180,12 @@ public class TempTrans extends AppCompatActivity {
         tv_Expression = findViewById(R.id.tv_expression);
         tv_Result = findViewById(R.id.tv_result);
         checkList = new ArrayList<>();
+        checkList.add(1);
     }
 
     public void btClick(View v) {
         int gId = v.getId();
 
-        if(checkList.isEmpty()){
-            tv_Expression.setText("");
-        }
 
         if (gId == R.id.bt_1) addNumber("1");
         else if (gId == R.id.bt_2) addNumber("2");
@@ -204,6 +202,7 @@ public class TempTrans extends AppCompatActivity {
 
     public void clearClick (View v){
         checkList.clear();
+        checkList.add(1);
         tv_Expression.setText("0");
         tv_Result.setText("");
         changeSpinner(exp, res);
@@ -223,15 +222,21 @@ public class TempTrans extends AppCompatActivity {
                 li.remove(li.size() - 1);
             tv_Expression.setText(TextUtils.join("", li));
         }
+
         if (tv_Expression.length() == 0){
             tv_Expression.setText("0");
             checkList.clear();
+            checkList.add(1);
         }
         changeSpinner(exp, res);
     }
 
     // 숫자 버튼
     void addNumber (String str){
+        if(tv_Expression.getText().toString().equals("0")){
+            tv_Expression.setText("");
+            checkList.clear();
+        }
         checkList.add(1); // 숫자가 들어왔는지 체크리스트에 표시
         tv_Expression.append(str); // UI
         changeSpinner(exp, res);
@@ -242,7 +247,6 @@ public class TempTrans extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), ". 을 사용할 수 없습니다.", Toast.LENGTH_SHORT).show();
             return;
         }
-
         // 하나의 수에 . 이 여러 개 오는 것을 막기
         for (int i = checkList.size() - 2; i >= 0; i--) {
             int check = checkList.get(i);
