@@ -215,6 +215,9 @@ public class DefaultCal extends AppCompatActivity {
 
     public void deleteClick (View v){
         if (tv_Expression.length() != 0) {
+            if(checkList.get(checkList.size() - 1) == -1){
+                checkList.remove(checkList.size() - 1);
+            }
             checkList.remove(checkList.size() - 1);
             String[] ex = tv_Expression.getText().toString().split(" ");
             List<String> li = new ArrayList<String>();
