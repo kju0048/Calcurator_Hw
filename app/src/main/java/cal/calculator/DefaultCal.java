@@ -96,6 +96,12 @@ public class DefaultCal extends AppCompatActivity {
                     startActivity(in);
                     finish();
                 }
+
+                if(id == R.id.menu_proCal){
+                    Intent in = new Intent(getApplicationContext(), ProgrammerCal.class);
+                    startActivity(in);
+                    finish();
+                }
                 return true;
             }
         });

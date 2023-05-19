@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,10 +58,9 @@ public class ProgrammerCal extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_defcal);
+        setContentView(R.layout.activity_programmer_cal);
 
         this.init();
-
 
 
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -83,6 +83,11 @@ public class ProgrammerCal extends AppCompatActivity {
 
                 if(id == R.id.menu_tempTrans){
                     Intent in = new Intent(getApplicationContext(), TempTrans.class);
+                    startActivity(in);
+                    finish();
+                }
+                if(id == R.id.menu_defCal){
+                    Intent in = new Intent(getApplicationContext(), DefaultCal.class);
                     startActivity(in);
                     finish();
                 }
