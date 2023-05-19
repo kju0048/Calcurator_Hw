@@ -213,14 +213,30 @@ public class ProgrammerCal extends AppCompatActivity {
     public void btBracket(View v){
         int gId = v.getId();
         if(gId == R.id.bt_leftBracket){
-            if(checkList.isEmpty()){
+            if(checkList.isEmpty() || resultSet){
                 Toast.makeText(getApplicationContext(), "괄호를 입력할 수 없습니다.", Toast.LENGTH_SHORT).show();
                 return;
             }
             if(checkList.get(checkList.size() - 1) == 1){
-
+                checkList.add(0);
+                checkList.add(3);
+                tv_Expression.setText(tv_Expression.getText() + " X ( ");
             }
-
+            else if(checkList.get(checkList.size() - 1) == 0){
+                checkList.add(3);
+                tv_Expression.setText(tv_Expression.getText() + "( ");
+            }
+            bracket_count++;
+        }
+        else if(gId == R.id.bt_rightBracket){
+            if(bracket_count == 0 || checkList.get(checkList.size() - 1) == 0){
+                Toast.makeText(getApplicationContext(), "괄호를 입력할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                return;
+            } else{
+                checkList.add(4);
+                tv_Expression.setText(tv_Expression.getText() + " ) ");
+            }
+            bracket_count--;
         }
     }
 
@@ -297,7 +313,7 @@ public class ProgrammerCal extends AppCompatActivity {
     // 결과 버튼
     public void btResult (View v){
         if (tv_Expression.length() == 0) return;
-        if (checkList.get(checkList.size() - 1) != 1) {
+        if (checkList.get(checkList.size() - 1) != 1 && checkList.get(checkList.size() - 1) != 4) {
             Toast.makeText(getApplicationContext(), "마지막 입력값이 숫자여야 사용가능합니다.", Toast.LENGTH_SHORT).show();
             return;
         }
