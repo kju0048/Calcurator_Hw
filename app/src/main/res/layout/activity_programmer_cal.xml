@@ -56,9 +56,11 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="30dp"
                     android:textColor="@color/black"
-                    android:textSize="50dp" />
+                    android:maxLength="16"
+                    android:textSize="40dp" />
 
                 <LinearLayout
+                    android:layout_marginTop="20dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left">
@@ -77,6 +79,7 @@
                             android:button="@drawable/radiobutton"
                             android:text="HEX\t\t\t0"
                             android:textColor="@color/black"
+                            android:maxLength="22"
                             android:textSize="18dp" />
 
                         <RadioButton
@@ -87,6 +90,7 @@
                             android:text="DEC\t\t\t0"
                             android:textColor="@color/black"
                             android:checked="true"
+                            android:maxLength="22"
                             android:textSize="18dp" />
 
                         <RadioButton
@@ -96,6 +100,7 @@
                             android:button="@drawable/radiobutton"
                             android:text="OCT\t\t\t0"
                             android:textColor="@color/black"
+                            android:maxLength="22"
                             android:textSize="18dp" />
 
                         <RadioButton
@@ -105,6 +110,7 @@
                             android:button="@drawable/radiobutton"
                             android:text="BIN\t\t\t0"
                             android:textColor="@color/black"
+                            android:maxLength="22"
                             android:textSize="18dp" />
                     </RadioGroup>
                 </LinearLayout>
@@ -151,7 +157,7 @@
                             android:layout_margin="5dp"
                             android:textColor="@color/black"
                             android:layout_weight="1"
-                            android:onClick="btShift"
+                            android:onClick="btClick"
                             android:textSize="18sp" />
 
                         <Button
@@ -163,7 +169,7 @@
                             android:layout_margin="5dp"
                             android:textColor="@color/black"
                             android:layout_weight="1"
-                            android:onClick="btShift"
+                            android:onClick="btClick"
                             android:textSize="18sp" />
 
                         <Button
@@ -213,7 +219,7 @@
                             android:id="@+id/bt_leftBracket"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:background="@drawable/buttonshape_white"
+                            android:background="@drawable/buttonshape_gray"
                             android:text="("
                             android:layout_margin="5dp"
                             android:textColor="@color/black"
@@ -225,7 +231,7 @@
                             android:id="@+id/bt_rightBracket"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:background="@drawable/buttonshape_white"
+                            android:background="@drawable/buttonshape_gray"
                             android:text=")"
                             android:layout_margin="5dp"
                             android:textColor="@color/black"
@@ -242,7 +248,7 @@
                             android:layout_margin="5dp"
                             android:textColor="@color/black"
                             android:layout_weight="1"
-                            android:onClick="btPercent"
+                            android:onClick="btClick"
                             android:textSize="18sp" />
 
                         <Button

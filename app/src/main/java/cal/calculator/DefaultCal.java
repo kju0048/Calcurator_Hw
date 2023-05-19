@@ -102,6 +102,12 @@ public class DefaultCal extends AppCompatActivity {
                     startActivity(in);
                     finish();
                 }
+
+                if(id == R.id.menu_defCal){
+                    Intent in = new Intent(getApplicationContext(), DefaultCal.class);
+                    startActivity(in);
+                    finish();
+                }
                 return true;
             }
         });
@@ -178,6 +184,10 @@ public class DefaultCal extends AppCompatActivity {
             return;
         }
         if (!checkList.isEmpty() && checkList.get(checkList.size() - 1) == -1) {
+            if(gId != R.id.bt_add && gId != R.id.bt_mul && gId != R.id.bt_sub && gId != R.id.bt_div){
+                Toast.makeText(getApplicationContext(), "숫자를 입력할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                return;
+            }
             tv_Expression.setText(tv_Result.getText().toString());
             checkList.clear();
             checkList.add(1); // 정수

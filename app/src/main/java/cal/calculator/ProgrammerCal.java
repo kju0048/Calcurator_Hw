@@ -1,22 +1,17 @@
 package cal.calculator;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -24,12 +19,6 @@ import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -41,12 +30,14 @@ public class ProgrammerCal extends AppCompatActivity {
     //SERVER
     TextView tv_Expression;
     TextView tv_Result;
-    List<Integer> checkList; // -1: 이콜, 0: 연산자, 1: 숫자, 2: . / 예외 발생을 막는 리스트
+    List<Integer> checkList; // -1: 이콜, 0: 연산자, 1: 숫자, 2: ., 3: (, 4: ) 예외 발생을 막는 리스트
     Stack<String> operatorStack; // 연산자 스택
     List<String> infixList; // 중위 표기
     List<String> postfixList; // 후위 표기
 
     Boolean resultSet = false; // 마지막 동작이 = 인지
+
+    int result = 0;
 
 
     DrawerLayout drawerLayout;
@@ -55,6 +46,7 @@ public class ProgrammerCal extends AppCompatActivity {
     RadioGroup rg;
     RadioButton rb_hex, rb_dec, rb_oct, rb_bin;
     int cal_mode = 1; // 0 : 16진수, 1 : 10진수, 2 : 8진수, 3 : 2진수
+    int bracket_count = 0; // ( 개수 카운트
 
 
 
@@ -89,6 +81,13 @@ public class ProgrammerCal extends AppCompatActivity {
                     startActivity(in);
                     finish();
                 }
+
+                if(id == R.id.menu_proCal){
+                    Intent in = new Intent(getApplicationContext(), ProgrammerCal.class);
+                    startActivity(in);
+                    finish();
+                }
+
                 if(id == R.id.menu_defCal){
                     Intent in = new Intent(getApplicationContext(), DefaultCal.class);
                     startActivity(in);
@@ -107,18 +106,21 @@ public class ProgrammerCal extends AppCompatActivity {
         rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-
                 if(checkedId == R.id.bt_hex){
                     cal_mode = 0;
+                    tv_Result.setText(Integer.toHexString(result));
                 }
                 else if(checkedId == R.id.bt_dec){
                     cal_mode = 1;
+                    tv_Result.setText(String.valueOf(result));
                 }
                 else if(checkedId == R.id.bt_oct){
                     cal_mode = 2;
+                    tv_Result.setText(Integer.toOctalString(result));
                 }
                 else{
                     cal_mode = 3;
+                    tv_Result.setText(Integer.toBinaryString(result));
                 }
                 radioChange(cal_mode);
             }
@@ -157,6 +159,7 @@ public class ProgrammerCal extends AppCompatActivity {
     void init() {
         tv_Expression = findViewById(R.id.tv_expression);
         tv_Result = findViewById(R.id.tv_result);
+        tv_Result.setText("0");
         checkList = new ArrayList<>();
         operatorStack = new Stack<>();
         infixList = new ArrayList<>();
@@ -167,14 +170,20 @@ public class ProgrammerCal extends AppCompatActivity {
         int gId = v.getId();
 
         if (!checkList.isEmpty() && checkList.get(checkList.size() - 1) == -1) {
+            if(gId != R.id.bt_add && gId != R.id.bt_mul && gId != R.id.bt_sub && gId != R.id.bt_div && gId != R.id.bt_percent
+            && gId != R.id.bt_leftShift && gId != R.id.bt_rightShift){
+                Toast.makeText(getApplicationContext(), "숫자를 입력할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                return;
+            }
             tv_Expression.setText(tv_Result.getText().toString());
             checkList.clear();
             checkList.add(1); // 정수
-            checkList.add(2); // .
-            checkList.add(1); // 소수점
             tv_Result.setText("");
             resultSet = false;
         }
+
+        if(checkList.isEmpty())
+            tv_Result.setText("");
 
         if (gId == R.id.bt_1) addNumber("1");
         else if (gId == R.id.bt_2) addNumber("2");
@@ -196,19 +205,44 @@ public class ProgrammerCal extends AppCompatActivity {
         else if (gId == R.id.bt_mul) addOperator("X");
         else if (gId == R.id.bt_add) addOperator("+");
         else if (gId == R.id.bt_sub) addOperator("-");
+        else if (gId == R.id.bt_percent) addOperator("%");
+        else if (gId == R.id.bt_leftShift) addOperator("<<");
+        else if (gId == R.id.bt_rightShift) addOperator(">>");
+    }
+
+    public void btBracket(View v){
+        int gId = v.getId();
+        if(gId == R.id.bt_leftBracket){
+            if(checkList.isEmpty()){
+                Toast.makeText(getApplicationContext(), "괄호를 입력할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if(checkList.get(checkList.size() - 1) == 1){
+
+            }
+
+        }
     }
 
     public void clearClick (View v){
         infixList.clear();
         checkList.clear();
         tv_Expression.setText("");
-        tv_Result.setText("");
+        tv_Result.setText("0");
         operatorStack.clear();
         postfixList.clear();
+
+        rb_hex.setText("HEX\t\t\t0");
+        rb_dec.setText("DEC\t\t\t0");
+        rb_oct.setText("OCT\t\t\t0");
+        rb_bin.setText("BIN\t\t\t0");
     }
 
     public void deleteClick (View v){
         if (tv_Expression.length() != 0) {
+            if(checkList.get(checkList.size() - 1) == -1){
+                checkList.remove(checkList.size() - 1);
+            }
             checkList.remove(checkList.size() - 1);
             String[] ex = tv_Expression.getText().toString().split(" ");
             List<String> li = new ArrayList<String>();
@@ -220,6 +254,10 @@ public class ProgrammerCal extends AppCompatActivity {
             tv_Expression.setText(TextUtils.join(" ", li));
         }
         tv_Result.setText("");
+        rb_hex.setText("HEX\t\t\t0");
+        rb_dec.setText("DEC\t\t\t0");
+        rb_oct.setText("OCT\t\t\t0");
+        rb_bin.setText("BIN\t\t\t0");
         resultSet = false;
     }
 
@@ -311,88 +349,14 @@ public class ProgrammerCal extends AppCompatActivity {
         resultSet = true;
     }
 
-    public void btxx(View v){
-        if(tv_Result.length() != 0){
-            int dtemp = Integer.parseInt(tv_Result.getText().toString()) * Integer.parseInt(tv_Result.getText().toString());
-            tv_Expression.setText(String.valueOf(dtemp));
-            tv_Result.setText("");
-            checkList.add(1);
-            resultSet = false;
-            return;
-        }
-
-        if (tv_Expression.length() == 0 || checkList.get(checkList.size() - 1) != 1) {
-            Toast.makeText(getApplicationContext(), "마지막 입력값이 숫자여야 사용가능합니다.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        String[] ex = tv_Expression.getText().toString().split(" ");
-        List<String> li = new ArrayList<String>();
-        Collections.addAll(li, ex);
-        String temps = li.remove(li.size() - 1);
-        li.add(String.valueOf(Integer.parseInt(temps) * Integer.parseInt(temps)));
-
-        tv_Expression.setText(TextUtils.join(" ", li));
-        resultSet = false;
-    }
-
-
-    public void btRoot(View v){
-        if(tv_Result.length() != 0){
-            int dtemp = Integer.parseInt(tv_Result.getText().toString()) * Integer.parseInt(tv_Result.getText().toString());
-            tv_Expression.setText(String.valueOf(dtemp));
-            tv_Result.setText("");
-            checkList.add(1);
-            resultSet = false;
-            return;
-        }
-
-        if (tv_Expression.length() == 0 || checkList.get(checkList.size() - 1) != 1) {
-            Toast.makeText(getApplicationContext(), "마지막 입력값이 숫자여야 사용가능합니다.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        String[] ex = tv_Expression.getText().toString().split(" ");
-        List<String> li = new ArrayList<String>();
-        Collections.addAll(li, ex);
-        String temps = li.remove(li.size() - 1);
-        li.add(String.valueOf(Integer.parseInt(temps) * Integer.parseInt(temps)));
-
-        tv_Expression.setText(TextUtils.join(" ", li));
-        resultSet = false;
-    }
-
-
-    // 1/x 버튼
-    public void fracClick(View v) {
-        if(tv_Result.length() != 0){
-            tv_Expression.setText("1 / " + tv_Result.getText());
-            tv_Result.setText("");
-            checkList.add(1);
-            resultSet = false;
-            return;
-        }
-
-        if (tv_Expression.length() == 0 || checkList.get(checkList.size() - 1) != 1) {
-            Toast.makeText(getApplicationContext(), "마지막 입력값이 숫자여야 사용가능합니다.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-
-        String[] ex = tv_Expression.getText().toString().split(" ");
-        List<String> li = new ArrayList<String>();
-        Collections.addAll(li, ex);
-        String temps = li.remove(li.size() - 1);
-
-        li.add("1 / " + temps);
-        tv_Expression.setText(TextUtils.join(" ", li));
-        resultSet = false;
-    }
-
     // 연산자 가중치
     int getWeight (String operator){
         int weight = 0;
         switch (operator) {
+            case "<<":
+            case ">>":
+                weight = 4;
+                break;
             case "X":
             case "/":
                 weight = 3;
@@ -464,7 +428,6 @@ public class ProgrammerCal extends AppCompatActivity {
                 second = Integer.parseInt(num2, 2);
                 break;
         }
-
         try {
             switch (op) {
                 case "X":
@@ -482,8 +445,26 @@ public class ProgrammerCal extends AppCompatActivity {
                 case "-":
                     result = first - second;
                     break;
+                case ">>":
+                    if(first % second == 1) first--;
+                    for(int i = 0 ; i < second ; i++){
+                        if(first == 1) {
+                            first = 0;
+                            break;
+                        }
+                        first /= 2;
+                    }
+                    result = first;
+                    break;
+                case "<<":
+                    for(int i = 0 ; i < second ; i++){
+                        first *= 2;
+                    }
+                    result = first;
+                    break;
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             Toast.makeText(getApplicationContext(), "연산할 수 없습니다.", Toast.LENGTH_SHORT).show();
         }
 
@@ -529,6 +510,7 @@ public class ProgrammerCal extends AppCompatActivity {
             default:
                 dec_temp = 0;
         }
+        result = dec_temp;
         tv_Result.setText(temp);
         rb_hex.setText("HEX\t\t\t" + Integer.toHexString(dec_temp));
         rb_dec.setText("DEC\t\t\t" + Integer.valueOf(dec_temp));

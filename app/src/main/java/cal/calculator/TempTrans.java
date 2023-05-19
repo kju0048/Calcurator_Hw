@@ -63,14 +63,20 @@ public class TempTrans extends AppCompatActivity {
                 int id = item.getItemId();
                 String title = item.getTitle().toString();
 
-                if(id == R.id.menu_defCal){
-                    Intent in = new Intent(getApplicationContext(), DefaultCal.class);
+                if(id == R.id.menu_tempTrans){
+                    Intent in = new Intent(getApplicationContext(), TempTrans.class);
                     startActivity(in);
                     finish();
                 }
 
                 if(id == R.id.menu_proCal){
                     Intent in = new Intent(getApplicationContext(), ProgrammerCal.class);
+                    startActivity(in);
+                    finish();
+                }
+
+                if(id == R.id.menu_defCal){
+                    Intent in = new Intent(getApplicationContext(), DefaultCal.class);
                     startActivity(in);
                     finish();
                 }
