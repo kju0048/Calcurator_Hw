@@ -86,6 +86,7 @@
                             android:button="@drawable/radiobutton"
                             android:text="DEC\t\t\t0"
                             android:textColor="@color/black"
+                            android:checked="true"
                             android:textSize="18dp" />
 
                         <RadioButton
@@ -102,7 +103,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:button="@drawable/radiobutton"
-                            android:text="BIN\t\t\t\t0"
+                            android:text="BIN\t\t\t0"
                             android:textColor="@color/black"
                             android:textSize="18dp" />
                     </RadioGroup>
@@ -137,6 +138,7 @@
                             android:textColor="@color/black"
                             android:layout_weight="1"
                             android:onClick="btClick"
+                            android:enabled="false"
                             android:textSize="18sp" />
 
                         <Button
@@ -203,6 +205,7 @@
                             android:layout_margin="5dp"
                             android:textColor="@color/black"
                             android:layout_weight="1"
+                            android:enabled="false"
                             android:onClick="btClick"
                             android:textSize="18sp" />
 
@@ -269,6 +272,7 @@
                             android:layout_margin="5dp"
                             android:textColor="@color/black"
                             android:layout_weight="1"
+                            android:enabled="false"
                             android:onClick="btClick"
                             android:textSize="18sp" />
 
@@ -335,6 +339,7 @@
                             android:layout_margin="5dp"
                             android:textColor="@color/black"
                             android:layout_weight="1"
+                            android:enabled="false"
                             android:onClick="btClick"
                             android:textSize="18sp" />
 
@@ -402,6 +407,7 @@
                             android:textColor="@color/black"
                             android:layout_weight="1"
                             android:onClick="btClick"
+                            android:enabled="false"
                             android:textSize="18sp" />
 
                         <Button
@@ -467,6 +473,7 @@
                             android:layout_margin="5dp"
                             android:textColor="@color/black"
                             android:layout_weight="1"
+                            android:enabled="false"
                             android:onClick="btClick"
                             android:textSize="18sp" />
 
@@ -503,7 +510,7 @@
                             android:layout_margin="5dp"
                             android:textColor="@color/black"
                             android:layout_weight="1"
-                            android:onClick="btClick"
+                            android:enabled="false"
                             android:textSize="18sp" />
 
                         <Button
