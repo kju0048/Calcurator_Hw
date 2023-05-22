@@ -5,4 +5,28 @@
         <item>화씨</item>
         <item>절대 온도</item>
     </string-array>
+    <string-array name="time_array">
+        <item>년</item>
+        <item>주</item>
+        <item>일</item>
+        <item>시간</item>
+        <item>분</item>
+        <item>초</item>
+        <item>밀리초</item>
+        <item>마이크로초</item>
+    </string-array>
+    <string-array name="area_array">
+        <item>평</item>
+        <item>평방밀리미터</item>
+        <item>평방센티미터</item>
+        <item>평방미터</item>
+    </string-array>
+    <string-array name="weight_array">
+        <item>캐럿</item>
+        <item>밀리그램</item>
+        <item>그램</item>
+        <item>킬로그램</item>
+        <item>파운드</item>
+        <item>톤</item>
+    </string-array>
 </resources>

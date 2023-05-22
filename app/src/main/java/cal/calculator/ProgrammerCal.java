@@ -78,8 +78,8 @@ public class ProgrammerCal extends AppCompatActivity {
                 int id = item.getItemId();
                 //String title = item.getTitle().toString();
 
-                if(id == R.id.menu_tempTrans){
-                    Intent in = new Intent(getApplicationContext(), TempTrans.class);
+                if(id == R.id.menu_defCal){
+                    Intent in = new Intent(getApplicationContext(), DefaultCal.class);
                     startActivity(in);
                     finish();
                 }
@@ -90,8 +90,26 @@ public class ProgrammerCal extends AppCompatActivity {
                     finish();
                 }
 
-                if(id == R.id.menu_defCal){
-                    Intent in = new Intent(getApplicationContext(), DefaultCal.class);
+                if(id == R.id.menu_tempTrans){
+                    Intent in = new Intent(getApplicationContext(), TempTrans.class);
+                    startActivity(in);
+                    finish();
+                }
+
+                if(id == R.id.menu_weightTrans){
+                    Intent in = new Intent(getApplicationContext(), WeightTrans.class);
+                    startActivity(in);
+                    finish();
+                }
+
+                if(id == R.id.menu_areaTrans){
+                    Intent in = new Intent(getApplicationContext(), AreaTrans.class);
+                    startActivity(in);
+                    finish();
+                }
+
+                if(id == R.id.menu_timeTrans){
+                    Intent in = new Intent(getApplicationContext(), TimeTrans.class);
                     startActivity(in);
                     finish();
                 }

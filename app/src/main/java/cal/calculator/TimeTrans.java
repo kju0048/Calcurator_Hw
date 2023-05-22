@@ -19,12 +19,13 @@ import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 
-public class TempTrans extends AppCompatActivity {
+public class TimeTrans extends AppCompatActivity {
 
     DrawerLayout drawerLayout;
     NavigationView navigationView;
@@ -41,7 +42,7 @@ public class TempTrans extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_temp_trans);
+        setContentView(R.layout.activity_time_trans);
 
         this.init();
 
@@ -104,7 +105,7 @@ public class TempTrans extends AppCompatActivity {
 
         // 입력값 스피너 구현
         sp_Exp = (Spinner) findViewById(R.id.exp_select);
-        String[] exp_str = getResources().getStringArray(R.array.temp_array);
+        String[] exp_str = getResources().getStringArray(R.array.time_array);
         ArrayAdapter<String> exp_adapter = new ArrayAdapter<String>(this, R.layout.spinner_dropdown_item, exp_str);
         exp_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sp_Exp.setAdapter(exp_adapter);
@@ -122,7 +123,7 @@ public class TempTrans extends AppCompatActivity {
 
         // 출력값 스피너 구현
         sp_Res = (Spinner) findViewById(R.id.res_select);
-        String[] res_str = getResources().getStringArray(R.array.temp_array);
+        String[] res_str = getResources().getStringArray(R.array.time_array);
         ArrayAdapter<String> res_adapter = new ArrayAdapter<String>(this, R.layout.spinner_dropdown_item, res_str);
         res_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sp_Res.setAdapter(res_adapter);
@@ -160,50 +161,50 @@ public class TempTrans extends AppCompatActivity {
         changeSpinner(exp, res);
     }
 
-    // 0. 섭씨  1. 화씨  2. 절대 온도
-    public void changeSpinner(int exp, int res){
-        double temp = Double.parseDouble(tv_Expression.getText().toString());
-        switch(exp){
+    // 0. 년 1.주 2.일 3.시간 4.분 5.초 6.밀리초 7.마이크로초
+    public void changeSpinner(int exp, int res) {
+        double time = Double.parseDouble(tv_Expression.getText().toString());
+        switch (exp) {
             case 0:
-                switch(res){
-                    case 0: // 섭씨 -> 섭씨
-                        tv_Result.setText(temp + "");
+                switch (res) {
+                    case 0: // 년 -> 년
+                        tv_Result.setText(formatResult(time));
                         break;
-                    case 1: // 섭씨 -> 화씨
-                        tv_Result.setText(String.valueOf(Math.round((temp * 1.8) + 32 * 100) / 100.0));
+                    case 1: // 년 -> 주
+                        tv_Result.setText(String.valueOf(Math.round((time * 52))));
                         break;
-                    case 2: // 섭씨 -> 절대 온도
-                        tv_Result.setText(String.valueOf(Math.round((temp + 273.15) * 100) / 100.0));
+                    case 2: // 년 -> 일
+                        tv_Result.setText(String.valueOf(Math.round((time * 365))));
+                        break;
+                    case 3: // 년 -> 시간
+                        tv_Result.setText(String.valueOf(Math.round((time * 365 * 24))));
+                        break;
+                    case 4: // 년 -> 분
+                        tv_Result.setText(String.valueOf(Math.round((time * 365 * 24 * 60))));
+                        break;
+                    case 5: // 년 -> 초
+                        tv_Result.setText(String.valueOf(Math.round((time * 365 * 24 * 60 * 60))));
+                        break;
+                    case 6: // 년 -> 밀리초
+                        tv_Result.setText(String.valueOf(Math.round((time * 365.25 * 24 * 60 * 60) * 1000)));
+                        break;
+                    case 7: // 년 -> 마이크로초
+                        tv_Result.setText(String.valueOf(Math.round((time * 365.25 * 24 * 60 * 60) * 1000000)));
                         break;
                 }
                 break;
             case 1:
-                switch(res){
-                    case 0: // 화씨 -> 섭씨
-                        tv_Result.setText(String.valueOf(Math.round((temp - 32) / 1.8 * 100) / 100.0));
-                        break;
-                    case 1: // 화씨 -> 화씨
-                        tv_Result.setText(temp + "");
-                        break;
-                    case 2: // 화씨 -> 절대온도
-                        tv_Result.setText(String.valueOf(Math.round((((temp - 32) / 1.8) + 273.15) * 100) / 100.0));
-                        break;
-                }
+                // Handle conversions for other time units
+                // ...
                 break;
-            case 2:
-                switch(res){
-                    case 0: // 절대 온도 -> 섭씨
-                        tv_Result.setText(String.valueOf(Math.round((temp - 273.15) * 100) / 100.0));
-                        break;
-                    case 1: // 절대 온도 -> 화씨
-                        tv_Result.setText(String.valueOf(Math.round((((temp - 273.15) * 1.8) + 32) * 100) / 100.0));
-                        break;
-                    case 2: // 절대 온도 -> 절대 온도
-                        tv_Result.setText(temp + "");
-                        break;
-                }
-                break;
+            // Handle conversions for other time units
+            // ...
         }
+    }
+
+    private String formatResult(double time) {
+        DecimalFormat formatter = new DecimalFormat("#,###");
+        return formatter.format(time);
     }
 
     void init() {

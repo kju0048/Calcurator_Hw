@@ -15,5 +15,14 @@
         <item android:id="@+id/menu_lengTrans"
             android:title="길이변환기"
             android:icon="@drawable/calimg"/>
+        <item android:id="@+id/menu_weightTrans"
+            android:title="무게/질량변환기"
+            android:icon="@drawable/calimg"/>
+        <item android:id="@+id/menu_areaTrans"
+            android:title="면적변환기"
+            android:icon="@drawable/calimg"/>
+        <item android:id="@+id/menu_timeTrans"
+            android:title="시간변환기"
+            android:icon="@drawable/calimg"/>
     </group>
 </menu>

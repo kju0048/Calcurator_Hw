@@ -1,11 +1,5 @@
 package cal.calculator;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.drawerlayout.widget.DrawerLayout;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -17,14 +11,19 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
+
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Stack;
 
-public class TempTrans extends AppCompatActivity {
+public class WeightTrans extends AppCompatActivity {
 
     DrawerLayout drawerLayout;
     NavigationView navigationView;
@@ -41,7 +40,7 @@ public class TempTrans extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_temp_trans);
+        setContentView(R.layout.activity_weight_trans);
 
         this.init();
 
@@ -104,7 +103,7 @@ public class TempTrans extends AppCompatActivity {
 
         // 입력값 스피너 구현
         sp_Exp = (Spinner) findViewById(R.id.exp_select);
-        String[] exp_str = getResources().getStringArray(R.array.temp_array);
+        String[] exp_str = getResources().getStringArray(R.array.weight_array);
         ArrayAdapter<String> exp_adapter = new ArrayAdapter<String>(this, R.layout.spinner_dropdown_item, exp_str);
         exp_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sp_Exp.setAdapter(exp_adapter);
@@ -122,7 +121,7 @@ public class TempTrans extends AppCompatActivity {
 
         // 출력값 스피너 구현
         sp_Res = (Spinner) findViewById(R.id.res_select);
-        String[] res_str = getResources().getStringArray(R.array.temp_array);
+        String[] res_str = getResources().getStringArray(R.array.weight_array);
         ArrayAdapter<String> res_adapter = new ArrayAdapter<String>(this, R.layout.spinner_dropdown_item, res_str);
         res_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sp_Res.setAdapter(res_adapter);
@@ -162,50 +161,142 @@ public class TempTrans extends AppCompatActivity {
 
     // 0. 섭씨  1. 화씨  2. 절대 온도
     public void changeSpinner(int exp, int res){
-        double temp = Double.parseDouble(tv_Expression.getText().toString());
+        double weight = Double.parseDouble(tv_Expression.getText().toString());
         switch(exp){
             case 0:
                 switch(res){
-                    case 0: // 섭씨 -> 섭씨
-                        tv_Result.setText(temp + "");
+                    case 0: // 캐럿 -> 캐럿
+                        tv_Result.setText(weight + "");
                         break;
-                    case 1: // 섭씨 -> 화씨
-                        tv_Result.setText(String.valueOf(Math.round((temp * 1.8) + 32 * 100) / 100.0));
+                    case 1: // 캐럿 -> 밀리그램
+                        tv_Result.setText(String.valueOf(Math.round((weight * 200) * 10000) / 10000.0));
                         break;
-                    case 2: // 섭씨 -> 절대 온도
-                        tv_Result.setText(String.valueOf(Math.round((temp + 273.15) * 100) / 100.0));
+                    case 2: // 캐럿 -> 그램
+                        tv_Result.setText(String.valueOf(Math.round((weight * 0.2) * 10000) / 10000.0));
+                        break;
+                    case 3: // 캐럿 -> 킬로그램
+                        tv_Result.setText(String.valueOf(Math.round((weight * 0.0002) * 10000) / 10000.0));
+                        break;
+                    case 4: // 캐럿 -> 파운드
+                        tv_Result.setText(String.valueOf(Math.round((weight * 0.000440925) * 10000) / 10000.0));
+                        break;
+                    case 5: // 캐럿 -> 톤
+                        tv_Result.setText(String.valueOf(Math.round((weight * 2 * 0.0000001) * 10000) / 10000.0));
                         break;
                 }
                 break;
             case 1:
                 switch(res){
-                    case 0: // 화씨 -> 섭씨
-                        tv_Result.setText(String.valueOf(Math.round((temp - 32) / 1.8 * 100) / 100.0));
+                    case 0: // 밀리그램 -> 캐럿
+                        tv_Result.setText(String.valueOf(Math.round((weight * 0.005) * 10000) / 10000.0));
                         break;
-                    case 1: // 화씨 -> 화씨
-                        tv_Result.setText(temp + "");
+                    case 1: // 밀리그램 -> 밀리그램
+                        tv_Result.setText(weight + "");
                         break;
-                    case 2: // 화씨 -> 절대온도
-                        tv_Result.setText(String.valueOf(Math.round((((temp - 32) / 1.8) + 273.15) * 100) / 100.0));
+                    case 2: // 밀리그램 -> 그램
+                        tv_Result.setText(String.valueOf(Math.round((weight * 0.001) * 10000) / 10000.0));
+                        break;
+                    case 3: // 밀리그램 -> 킬로그램
+                        tv_Result.setText(String.valueOf(Math.round((weight * 0.000001) * 10000) / 10000.0));
+                        break;
+                    case 4: // 밀리그램 -> 파운드
+                        tv_Result.setText(String.valueOf(Math.round((weight * 0.00000220462) * 10000) / 10000.0));
+                        break;
+                    case 5: // 밀리그램 -> 톤
+                        tv_Result.setText(String.valueOf(Math.round((weight * 0.000000001) * 10000) / 10000.0));
                         break;
                 }
                 break;
             case 2:
                 switch(res){
-                    case 0: // 절대 온도 -> 섭씨
-                        tv_Result.setText(String.valueOf(Math.round((temp - 273.15) * 100) / 100.0));
+                    case 0: // 그램 -> 캐럿
+                        tv_Result.setText(String.valueOf(Math.round((weight * 5) * 10000) / 10000.0));
                         break;
-                    case 1: // 절대 온도 -> 화씨
-                        tv_Result.setText(String.valueOf(Math.round((((temp - 273.15) * 1.8) + 32) * 100) / 100.0));
+                    case 1: // 그램 -> 밀리그램
+                        tv_Result.setText(String.valueOf(Math.round((weight * 1000) * 10000) / 10000.0));
                         break;
-                    case 2: // 절대 온도 -> 절대 온도
-                        tv_Result.setText(temp + "");
+                    case 2: // 그램 -> 그램
+                        tv_Result.setText(weight + "");
+                        break;
+                    case 3: // 그램 -> 킬로그램
+                        tv_Result.setText(String.valueOf(Math.round((weight * 0.001) * 10000) / 10000.0));
+                        break;
+                    case 4: // 그램 -> 파운드
+                        tv_Result.setText(String.valueOf(Math.round((weight * 0.00220462) * 10000) / 10000.0));
+                        break;
+                    case 5: // 그램 -> 톤
+                        tv_Result.setText(String.valueOf(Math.round((weight * 0.000001) * 10000) / 10000.0));
+                        break;
+                }
+                break;
+            case 3:
+                switch(res){
+                    case 0: // 킬로그램 -> 캐럿
+                        tv_Result.setText(String.valueOf(Math.round((weight * 5000) * 10000) / 10000.0));
+                        break;
+                    case 1: // 킬로그램 -> 밀리그램
+                        tv_Result.setText(String.valueOf(Math.round((weight * 1000000) * 10000) / 10000.0));
+                        break;
+                    case 2: // 킬로그램 -> 그램
+                        tv_Result.setText(String.valueOf(Math.round((weight * 1000) * 10000) / 10000.0));
+                        break;
+                    case 3: // 킬로그램 -> 킬로그램
+                        tv_Result.setText(weight + "");
+                        break;
+                    case 4: // 킬로그램 -> 파운드
+                        tv_Result.setText(String.valueOf(Math.round((weight * 2.20462) * 10000) / 10000.0));
+                        break;
+                    case 5: // 킬로그램 -> 톤
+                        tv_Result.setText(String.valueOf(Math.round((weight * 0.001) * 10000) / 10000.0));
+                        break;
+                }
+                break;
+            case 4:
+                switch(res){
+                    case 0: // 파운드 -> 캐럿
+                        tv_Result.setText(String.valueOf(Math.round((weight * 2267.96) * 10000) / 10000.0));
+                        break;
+                    case 1: // 파운드 -> 밀리그램
+                        tv_Result.setText(String.valueOf(Math.round((weight * 453592) * 10000) / 10000.0));
+                        break;
+                    case 2: // 파운드 -> 그램
+                        tv_Result.setText(String.valueOf(Math.round((weight * 453.592) * 10000) / 10000.0));
+                        break;
+                    case 3: // 파운드 -> 킬로그램
+                        tv_Result.setText(String.valueOf(Math.round((weight * 0.453592) * 10000) / 10000.0));
+                        break;
+                    case 4: // 파운드 -> 파운드
+                        tv_Result.setText(weight + "");
+                        break;
+                    case 5: // 파운드 -> 톤
+                        tv_Result.setText(String.valueOf(Math.round((weight * 0.00045359) * 10000) / 10000.0));
+                        break;
+                }
+                break;
+            case 5:
+                switch(res){
+                    case 0: // 톤 -> 캐럿
+                        tv_Result.setText(String.valueOf(Math.round((weight * 5000000) * 10000) / 10000.0));
+                        break;
+                    case 1: // 톤 -> 밀리그램
+                        tv_Result.setText(String.valueOf(Math.round((weight * 1000000000) * 10000) / 10000.0));
+                        break;
+                    case 2: // 톤 -> 그램
+                        tv_Result.setText(String.valueOf(Math.round((weight * 1000000) * 10000) / 10000.0));
+                        break;
+                    case 3: // 톤 -> 킬로그램
+                        tv_Result.setText(String.valueOf(Math.round((weight * 1000) * 10000) / 10000.0));
+                        break;
+                    case 4: // 톤 -> 파운드
+                        tv_Result.setText(String.valueOf(Math.round((weight * 2204.62) * 10000) / 10000.0));
+                        break;
+                    case 5: // 톤 -> 톤
+                        tv_Result.setText(weight + "");
                         break;
                 }
                 break;
         }
     }
-
     void init() {
         tv_Expression = findViewById(R.id.tv_expression);
         tv_Result = findViewById(R.id.tv_result);

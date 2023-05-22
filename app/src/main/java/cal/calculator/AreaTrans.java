@@ -1,11 +1,5 @@
 package cal.calculator;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.drawerlayout.widget.DrawerLayout;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -17,14 +11,19 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
+
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Stack;
 
-public class TempTrans extends AppCompatActivity {
+public class AreaTrans extends AppCompatActivity {
 
     DrawerLayout drawerLayout;
     NavigationView navigationView;
@@ -41,7 +40,7 @@ public class TempTrans extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_temp_trans);
+        setContentView(R.layout.activity_area_trans);
 
         this.init();
 
@@ -104,7 +103,7 @@ public class TempTrans extends AppCompatActivity {
 
         // 입력값 스피너 구현
         sp_Exp = (Spinner) findViewById(R.id.exp_select);
-        String[] exp_str = getResources().getStringArray(R.array.temp_array);
+        String[] exp_str = getResources().getStringArray(R.array.area_array);
         ArrayAdapter<String> exp_adapter = new ArrayAdapter<String>(this, R.layout.spinner_dropdown_item, exp_str);
         exp_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sp_Exp.setAdapter(exp_adapter);
@@ -122,7 +121,7 @@ public class TempTrans extends AppCompatActivity {
 
         // 출력값 스피너 구현
         sp_Res = (Spinner) findViewById(R.id.res_select);
-        String[] res_str = getResources().getStringArray(R.array.temp_array);
+        String[] res_str = getResources().getStringArray(R.array.area_array);
         ArrayAdapter<String> res_adapter = new ArrayAdapter<String>(this, R.layout.spinner_dropdown_item, res_str);
         res_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sp_Res.setAdapter(res_adapter);
@@ -162,44 +161,70 @@ public class TempTrans extends AppCompatActivity {
 
     // 0. 섭씨  1. 화씨  2. 절대 온도
     public void changeSpinner(int exp, int res){
-        double temp = Double.parseDouble(tv_Expression.getText().toString());
+        double area = Double.parseDouble(tv_Expression.getText().toString());
         switch(exp){
             case 0:
                 switch(res){
-                    case 0: // 섭씨 -> 섭씨
-                        tv_Result.setText(temp + "");
+                    case 0: // 평 -> 평
+                        tv_Result.setText(area + "");
                         break;
-                    case 1: // 섭씨 -> 화씨
-                        tv_Result.setText(String.valueOf(Math.round((temp * 1.8) + 32 * 100) / 100.0));
+                    case 1: // 평 -> 평방밀리미터
+                        tv_Result.setText(String.valueOf(Math.round((area * 3305800) * 10000) / 10000.0));
                         break;
-                    case 2: // 섭씨 -> 절대 온도
-                        tv_Result.setText(String.valueOf(Math.round((temp + 273.15) * 100) / 100.0));
+                    case 2: // 평 -> 평방센티미터
+                        tv_Result.setText(String.valueOf(Math.round((area * 33058) * 10000) / 10000.0));
+                        break;
+                    case 3: // 평 -> 평방미터
+                        tv_Result.setText(String.valueOf(Math.round((area * 3.3058) * 10000) / 10000.0));
                         break;
                 }
                 break;
             case 1:
                 switch(res){
-                    case 0: // 화씨 -> 섭씨
-                        tv_Result.setText(String.valueOf(Math.round((temp - 32) / 1.8 * 100) / 100.0));
+                    case 0: // 평방밀리미터 -> 평
+                        tv_Result.setText(String.valueOf(Math.round((area * 302500) * 10000) / 10000.0));
                         break;
-                    case 1: // 화씨 -> 화씨
-                        tv_Result.setText(temp + "");
+                    case 1: // 평방밀리미터 -> 평방밀리미터
+                        tv_Result.setText(area + "");
                         break;
-                    case 2: // 화씨 -> 절대온도
-                        tv_Result.setText(String.valueOf(Math.round((((temp - 32) / 1.8) + 273.15) * 100) / 100.0));
+                    case 2: // 평방밀리미터 -> 평방센티미터
+                        tv_Result.setText(String.valueOf(Math.round((area * 0.0001) * 10000) / 10000.0));
+                        break;
+                    case 3: // 평방밀리미터 -> 평방미터
+                        tv_Result.setText(String.valueOf(Math.round((area * 0.000001) * 10000) / 10000.0));
                         break;
                 }
                 break;
             case 2:
                 switch(res){
-                    case 0: // 절대 온도 -> 섭씨
-                        tv_Result.setText(String.valueOf(Math.round((temp - 273.15) * 100) / 100.0));
+                    case 0: // 평방센티미터 -> 평
+                        tv_Result.setText(String.valueOf(Math.round((area * 3025) * 10000) / 10000.0));
                         break;
-                    case 1: // 절대 온도 -> 화씨
-                        tv_Result.setText(String.valueOf(Math.round((((temp - 273.15) * 1.8) + 32) * 100) / 100.0));
+                    case 1: // 평방센티미터 -> 평방밀리미터
+                        tv_Result.setText(String.valueOf(Math.round((area * 10000) * 10000) / 10000.0));
                         break;
-                    case 2: // 절대 온도 -> 절대 온도
-                        tv_Result.setText(temp + "");
+                    case 2: // 평방센티미터 -> 평방센티미터
+                        tv_Result.setText(area + "");
+                        break;
+                    case 3: // 평방센티미터 -> 평방미터
+                        tv_Result.setText(String.valueOf(Math.round((area * 0.0001) * 10000) / 10000.0));
+                        break;
+                }
+                break;
+            case 3:
+                switch(res){
+                    case 0: // 평방미터 -> 평
+                        tv_Result.setText(String.valueOf(Math.round((area * 0.3025) * 10000) / 10000.0));
+                        break;
+                    case 1: // 평방미터 -> 평방밀리미터
+                        tv_Result.setText(String.valueOf(Math.round((area * 1000000) * 10000) / 10000.0));
+
+                        break;
+                    case 2: // 평방미터 -> 평방센티미터
+                        tv_Result.setText(String.valueOf(Math.round((area * 10000) * 10000) / 10000.0));
+                        break;
+                    case 3: // 평방미터 -> 평방미터
+                        tv_Result.setText(area + "");
                         break;
                 }
                 break;

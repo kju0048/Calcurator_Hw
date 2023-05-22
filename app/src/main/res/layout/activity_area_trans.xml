@@ -22,7 +22,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="일반계산기"
+                android:text="면적 변환기"
                 android:textColor="@color/white"
                 android:textStyle="bold"
                 android:textSize="24sp"
@@ -36,9 +36,8 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="350dp"
                 android:orientation="vertical"
-                android:gravity="right"
                 android:layout_marginRight="15dp"
                 android:layout_marginTop="30dp">
 
@@ -46,17 +45,44 @@
                     android:id="@+id/tv_expression"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="25dp"
+                    android:textSize="35dp"
+                    android:text="0"
+                    android:layout_marginLeft="20dp"
                     android:layout_marginTop="20dp"
-                    android:textColor="#737373"/>
+                    android:textColor="@color/black"/>
+
+                <Spinner
+                    android:id="@+id/exp_select"
+                    android:layout_width="100dp"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="20dp"
+                    android:background="@drawable/spinner_custom"
+                    android:overlapAnchor="false"
+                    android:popupElevation="10dp"
+                    android:popupBackground="#A5BEC1"
+                    android:textColor="@color/white"
+                    android:layout_marginTop="10dp" />
 
                 <TextView
                     android:id="@+id/tv_result"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="30dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="35dp"
                     android:textColor="@color/black"
                     android:textSize="50dp" />
+
+                <Spinner
+                    android:id="@+id/res_select"
+                    android:layout_width="100dp"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="20dp"
+                    android:background="@drawable/spinner_custom"
+                    android:overlapAnchor="false"
+                    android:popupElevation="10dp"
+                    android:popupBackground="#A5BEC1"
+                    android:textColor="@color/white"
+                    android:layout_marginTop="10dp" />
             </LinearLayout>
 
             <LinearLayout
@@ -69,105 +95,6 @@
                     android:layout_height="match_parent"
                     android:stretchColumns="*">
 
-                    <TableRow
-                        android:layout_width="wrap_content"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        >
-
-                        <Button
-                            android:id="@+id/bt_pic"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:background="@drawable/buttonshape_red"
-                            android:shadowColor="@color/black"
-                            android:text="PIC"
-                            android:layout_margin="5dp"
-                            android:textColor="@color/white"
-                            android:onClick="btPic"
-                            android:textSize="18sp" />
-
-                        <Button
-                            android:id="@+id/bt_cap"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:background="@drawable/buttonshape_purple"
-                            android:text="CAP"
-                            android:layout_margin="5dp"
-                            android:textColor="@color/white"
-                            android:textSize="18sp" />
-
-                        <Button
-                            android:id="@+id/bt_clear"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:background="@drawable/buttonshape_gray"
-                            android:text="C"
-                            android:layout_margin="5dp"
-                            android:textColor="@color/black"
-                            android:onClick="clearClick"
-                            android:textSize="18sp" />
-
-                        <Button
-                            android:id="@+id/bt_delete"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:background="@drawable/buttonshape_gray"
-                            android:text="DEL"
-                            android:layout_margin="5dp"
-                            android:textColor="@color/black"
-                            android:onClick="deleteClick"
-                            android:textSize="18sp" />
-                    </TableRow>
-                    <TableRow
-                        android:layout_width="wrap_content"
-                        android:layout_height="0dp"
-                        android:layout_weight="1">
-
-                        <Button
-                            android:id="@+id/bt_1divx"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:background="@drawable/buttonshape_gray"
-                            android:text="1/x"
-                            android:layout_margin="5dp"
-                            android:textColor="@color/black"
-                            android:onClick="fracClick"
-                            android:textSize="18sp" />
-
-                        <Button
-                            android:id="@+id/bt_xx"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:background="@drawable/buttonshape_gray"
-                            android:text="x^2"
-                            android:layout_margin="5dp"
-                            android:textColor="@color/black"
-                            android:onClick="btxx"
-                            android:textSize="18sp" />
-
-                        <Button
-                            android:id="@+id/bt_rootx"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:background="@drawable/buttonshape_gray"
-                            android:text="√x"
-                            android:layout_margin="5dp"
-                            android:textColor="@color/black"
-                            android:onClick="btRoot"
-                            android:textSize="18sp" />
-
-                        <Button
-                            android:id="@+id/bt_div"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:background="@drawable/buttonshape_gray"
-                            android:text="/"
-                            android:layout_margin="5dp"
-                            android:textColor="@color/black"
-                            android:onClick="btClick"
-                            android:textSize="18sp" />
-                    </TableRow>
                     <TableRow
                         android:layout_width="wrap_content"
                         android:layout_height="0dp"
@@ -207,14 +134,11 @@
                             android:textSize="18sp" />
 
                         <Button
-                            android:id="@+id/bt_mul"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:background="@drawable/buttonshape_gray"
-                            android:text="X"
                             android:layout_margin="5dp"
                             android:textColor="@color/black"
-                            android:onClick="btClick"
                             android:textSize="18sp" />
                     </TableRow>
                     <TableRow
@@ -255,14 +179,11 @@
                             android:textSize="18sp" />
 
                         <Button
-                            android:id="@+id/bt_sub"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:background="@drawable/buttonshape_gray"
-                            android:text="-"
                             android:layout_margin="5dp"
                             android:textColor="@color/black"
-                            android:onClick="btClick"
                             android:textSize="18sp" />
                     </TableRow>
                     <TableRow
@@ -304,14 +225,14 @@
                             android:textSize="18sp" />
 
                         <Button
-                            android:id="@+id/bt_add"
+                            android:id="@+id/bt_delete"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:background="@drawable/buttonshape_gray"
-                            android:text="+"
+                            android:text="DEL"
                             android:layout_margin="5dp"
                             android:textColor="@color/black"
-                            android:onClick="btClick"
+                            android:onClick="deleteClick"
                             android:textSize="18sp" />
                     </TableRow>
                     <TableRow
@@ -353,14 +274,14 @@
                             android:textSize="18sp" />
 
                         <Button
-                            android:id="@+id/bt_res"
+                            android:id="@+id/bt_clear"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:background="@drawable/buttonshape_blue"
-                            android:text="="
+                            android:text="C"
                             android:layout_margin="5dp"
                             android:textColor="@color/black"
-                            android:onClick="btResult"
+                            android:onClick="clearClick"
                             android:textSize="18sp" />
                     </TableRow>
                 </TableLayout>
