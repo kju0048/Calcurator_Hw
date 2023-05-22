@@ -32,6 +32,8 @@ public class ProgrammerCal extends AppCompatActivity {
     TextView tv_Result;
     List<Integer> checkList; // -1: 이콜, 0: 연산자, 1: 숫자, 2: ., 3: (, 4: ) 예외 발생을 막는 리스트
     Stack<String> operatorStack; // 연산자 스택
+    Stack<String> bracketOperatorStack;
+    List<String> bracket_post;
     List<String> infixList; // 중위 표기
     List<String> postfixList; // 후위 표기
 
@@ -164,6 +166,8 @@ public class ProgrammerCal extends AppCompatActivity {
         operatorStack = new Stack<>();
         infixList = new ArrayList<>();
         postfixList = new ArrayList<>();
+        bracketOperatorStack = new Stack<>();
+        bracket_post = new ArrayList<>();
     }
 
     public void btClick(View v) {
@@ -213,16 +217,24 @@ public class ProgrammerCal extends AppCompatActivity {
     public void btBracket(View v){
         int gId = v.getId();
         if(gId == R.id.bt_leftBracket){
-            if(checkList.isEmpty() || resultSet){
+            if(resultSet){
                 Toast.makeText(getApplicationContext(), "괄호를 입력할 수 없습니다.", Toast.LENGTH_SHORT).show();
                 return;
             }
-            if(checkList.get(checkList.size() - 1) == 1){
+            if(checkList.isEmpty()){
+                checkList.add(3);
+                tv_Expression.setText("( ");
+            }
+            else if(checkList.get(checkList.size() - 1) == 1){
                 checkList.add(0);
                 checkList.add(3);
                 tv_Expression.setText(tv_Expression.getText() + " X ( ");
             }
             else if(checkList.get(checkList.size() - 1) == 0){
+                checkList.add(3);
+                tv_Expression.setText(tv_Expression.getText() + "( ");
+            }
+            else if(checkList.get(checkList.size() - 1) == 3){
                 checkList.add(3);
                 tv_Expression.setText(tv_Expression.getText() + "( ");
             }
@@ -234,7 +246,7 @@ public class ProgrammerCal extends AppCompatActivity {
                 return;
             } else{
                 checkList.add(4);
-                tv_Expression.setText(tv_Expression.getText() + " ) ");
+                tv_Expression.setText(tv_Expression.getText() + " )");
             }
             bracket_count--;
         }
@@ -247,6 +259,7 @@ public class ProgrammerCal extends AppCompatActivity {
         tv_Result.setText("0");
         operatorStack.clear();
         postfixList.clear();
+        resultSet = false;
 
         rb_hex.setText("HEX\t\t\t0");
         rb_dec.setText("DEC\t\t\t0");
@@ -312,6 +325,11 @@ public class ProgrammerCal extends AppCompatActivity {
 
     // 결과 버튼
     public void btResult (View v){
+
+        if (bracket_count != 0) {
+            Toast.makeText(getApplicationContext(), "수식이 정확하지 않습니다.", Toast.LENGTH_SHORT).show();
+        }
+
         if (tv_Expression.length() == 0) return;
         if (checkList.get(checkList.size() - 1) != 1 && checkList.get(checkList.size() - 1) != 4) {
             Toast.makeText(getApplicationContext(), "마지막 입력값이 숫자여야 사용가능합니다.", Toast.LENGTH_SHORT).show();
@@ -403,25 +421,6 @@ public class ProgrammerCal extends AppCompatActivity {
         return result;
     }
 
-    // 중위 > 후위
-    void infixToPostfix () {
-        for (String item : infixList) {
-            // 피연산자
-            if (isNumber(item)) {
-                postfixList.add(item);
-            }
-                // 연산자
-            else { // 5 + 3 * sqrt(56) +
-                if (operatorStack.isEmpty()) operatorStack.push(item);
-                else {
-                    if (getWeight(operatorStack.peek()) >= getWeight(item))
-                        postfixList.add(operatorStack.pop());
-                    operatorStack.push(item);
-                }
-            }
-        }
-        while (!operatorStack.isEmpty()) postfixList.add(operatorStack.pop());
-    }
 
     // 계산
     String calculate (String num1, String num2, String op){
@@ -497,9 +496,77 @@ public class ProgrammerCal extends AppCompatActivity {
         return "";
     }
 
+    // 중위 > 후위 () ver
+    List<String> infixToPostfix (List<String> t) {
+        for (String item : t) {
+            // 피연산자
+            if (isNumber(item)) {
+                bracket_post.add(item);
+            }
+            // 연산자
+            else { // 5 + 3 * sqrt(56) +
+                if (bracketOperatorStack.isEmpty()) bracketOperatorStack.push(item);
+                else {
+                    if (getWeight(bracketOperatorStack.peek()) >= getWeight(item))
+                        bracket_post.add(bracketOperatorStack.pop());
+                    bracketOperatorStack.push(item);
+                }
+            }
+        }
+        while (!bracketOperatorStack.isEmpty()) bracket_post.add(bracketOperatorStack.pop());
+
+        return bracket_post;
+    }
+
+    // 중위 > 후위
+    void infixToPostfix () {
+        for (String item : infixList) {
+            // 피연산자
+            if (isNumber(item)) {
+                postfixList.add(item);
+            }
+            // 연산자
+            else { // 5 + 3 * sqrt(56) +
+                if (operatorStack.isEmpty()) operatorStack.push(item);
+                else {
+                    if (getWeight(operatorStack.peek()) >= getWeight(item))
+                        postfixList.add(operatorStack.pop());
+                    operatorStack.push(item);
+                }
+            }
+        }
+        while (!operatorStack.isEmpty()) postfixList.add(operatorStack.pop());
+    }
+
+
     // 최종 결과
     void result () {
-        int i = 0;
+        int i = 0, j = 0;
+
+        int leftBra = 0, rightBra = 0;
+        List<String> postfix_bracket;
+
+        while (infixList.contains("(")){
+            leftBra = infixList.lastIndexOf("(");
+            rightBra = infixList.subList(leftBra, infixList.size()).indexOf(")") + leftBra;
+            postfix_bracket = infixToPostfix(infixList.subList(leftBra + 1, rightBra));
+            while (postfix_bracket.size() != 1) {
+                if (!isNumber(postfix_bracket.get(j))) {
+                    postfix_bracket.add(j - 2, calculate(postfix_bracket.remove(j - 2), postfix_bracket.remove(j - 2), postfix_bracket.remove(j - 2)));
+                    j = -1;
+                }
+                j++;
+            }
+            String brac_temp = postfix_bracket.remove(0);
+            for(int t = leftBra; t <= rightBra; t++){
+                infixList.remove(leftBra);
+            }
+            infixList.add(leftBra, brac_temp);
+        }
+
+
+
+
         infixToPostfix();
         while (postfixList.size() != 1) {
             if (!isNumber(postfixList.get(i))) {
@@ -508,6 +575,7 @@ public class ProgrammerCal extends AppCompatActivity {
             }
             i++;
         }
+
         String temp = postfixList.remove(0);
         int dec_temp = 0;
         switch(cal_mode){
@@ -526,6 +594,7 @@ public class ProgrammerCal extends AppCompatActivity {
             default:
                 dec_temp = 0;
         }
+
         result = dec_temp;
         tv_Result.setText(temp);
         rb_hex.setText("HEX\t\t\t" + Integer.toHexString(dec_temp));
