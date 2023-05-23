@@ -6,14 +6,26 @@
         <item>절대 온도</item>
     </string-array>
     <string-array name="time_array">
-        <item>년</item>
-        <item>주</item>
-        <item>일</item>
-        <item>시간</item>
-        <item>분</item>
-        <item>초</item>
-        <item>밀리초</item>
         <item>마이크로초</item>
+        <item>밀리초</item>
+        <item>초</item>
+        <item>분</item>
+        <item>시간</item>
+        <item>일</item>
+        <item>주</item>
+        <item>년</item>
+    </string-array>
+    <string-array name="data_array">
+        <item>Bit</item>
+        <item>Byte</item>
+        <item>KB</item>
+        <item>MB</item>
+        <item>GB</item>
+        <item>TB</item>
+        <item>PB</item>
+        <item>EB</item>
+        <item>ZB</item>
+        <item>YB</item>
     </string-array>
     <string-array name="area_array">
         <item>평</item>
@@ -28,5 +40,31 @@
         <item>킬로그램</item>
         <item>파운드</item>
         <item>톤</item>
+    </string-array>
+    <string-array name="exchange_array">
+        <item>원(한국)</item>
+        <item>달러(미국)</item>
+        <item>유로(유럽)</item>
+        <item>옌(일본)</item>
+        <item>루블(러시아)</item>
+        <item>위안(중국)</item>
+    </string-array>
+    <string-array name="length_array">
+        <item>나노미터(nm)</item>
+        <item>미크론(μm)</item>
+        <item>밀리미터(mm)</item>
+        <item>센티미터(cm)</item>
+        <item>미터(m)</item>
+        <item>킬로미터(km)</item>
+        <item>인치(in)</item>
+        <item>피트(ft)</item>
+        <item>야드(yd)</item>
+        <item>마일(mi)</item>
+        <item>해리(league)</item>
+    </string-array>
+    <string-array name="angle_array">
+        <item>도(Degree)</item>
+        <item>라디안(Radian)</item>
+        <item>그라디안(Gradian)</item>
     </string-array>
 </resources>

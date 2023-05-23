@@ -97,6 +97,36 @@ public class WeightTrans extends AppCompatActivity {
                     startActivity(in);
                     finish();
                 }
+
+                if(id == R.id.menu_AngleTrans){
+                    Intent in = new Intent(getApplicationContext(), AngleTrans.class);
+                    startActivity(in);
+                    finish();
+                }
+
+                if(id == R.id.menu_DataTrans){
+                    Intent in = new Intent(getApplicationContext(), DataTrans.class);
+                    startActivity(in);
+                    finish();
+                }
+
+                if(id == R.id.menu_ExchangeTrans){
+                    Intent in = new Intent(getApplicationContext(), ExchangeTrans.class);
+                    startActivity(in);
+                    finish();
+                }
+
+                if(id == R.id.menu_SpeedTrans){
+                    Intent in = new Intent(getApplicationContext(), SpeedTrans.class);
+                    startActivity(in);
+                    finish();
+                }
+
+                if(id == R.id.menu_lengTrans){
+                    Intent in = new Intent(getApplicationContext(), LengthTrans.class);
+                    startActivity(in);
+                    finish();
+                }
                 return true;
             }
         });
@@ -169,126 +199,126 @@ public class WeightTrans extends AppCompatActivity {
                         tv_Result.setText(weight + "");
                         break;
                     case 1: // 캐럿 -> 밀리그램
-                        tv_Result.setText(String.valueOf(Math.round((weight * 200) * 10000) / 10000.0));
+                        tv_Result.setText(String.valueOf(Math.round((weight * 200) * 1000000000) / 1000000000.0));
                         break;
                     case 2: // 캐럿 -> 그램
-                        tv_Result.setText(String.valueOf(Math.round((weight * 0.2) * 10000) / 10000.0));
+                        tv_Result.setText(String.valueOf(Math.round((weight * 0.2) * 1000000000) / 1000000000.0));
                         break;
                     case 3: // 캐럿 -> 킬로그램
-                        tv_Result.setText(String.valueOf(Math.round((weight * 0.0002) * 10000) / 10000.0));
+                        tv_Result.setText(String.valueOf(Math.round((weight * 0.0002) * 1000000000) / 1000000000.0));
                         break;
                     case 4: // 캐럿 -> 파운드
-                        tv_Result.setText(String.valueOf(Math.round((weight * 0.000440925) * 10000) / 10000.0));
+                        tv_Result.setText(String.valueOf(Math.round((weight * 0.000440925) * 1000000000) / 1000000000.0));
                         break;
                     case 5: // 캐럿 -> 톤
-                        tv_Result.setText(String.valueOf(Math.round((weight * 2 * 0.0000001) * 10000) / 10000.0));
+                        tv_Result.setText(String.valueOf(Math.round((weight * 2 * 0.0000001) * 1000000000) / 1000000000.0));
                         break;
                 }
                 break;
             case 1:
                 switch(res){
                     case 0: // 밀리그램 -> 캐럿
-                        tv_Result.setText(String.valueOf(Math.round((weight * 0.005) * 10000) / 10000.0));
+                        tv_Result.setText(String.valueOf(Math.round((weight * 0.005) * 1000000000) / 1000000000.0));
                         break;
                     case 1: // 밀리그램 -> 밀리그램
                         tv_Result.setText(weight + "");
                         break;
                     case 2: // 밀리그램 -> 그램
-                        tv_Result.setText(String.valueOf(Math.round((weight * 0.001) * 10000) / 10000.0));
+                        tv_Result.setText(String.valueOf(Math.round((weight * 0.001) * 1000000000) / 1000000000.0));
                         break;
                     case 3: // 밀리그램 -> 킬로그램
-                        tv_Result.setText(String.valueOf(Math.round((weight * 0.000001) * 10000) / 10000.0));
+                        tv_Result.setText(String.valueOf(Math.round((weight * 0.000001) * 1000000000) / 1000000000.0));
                         break;
                     case 4: // 밀리그램 -> 파운드
-                        tv_Result.setText(String.valueOf(Math.round((weight * 0.00000220462) * 10000) / 10000.0));
+                        tv_Result.setText(String.valueOf(Math.round((weight * 0.00000220462) * 1000000000) / 1000000000.0));
                         break;
                     case 5: // 밀리그램 -> 톤
-                        tv_Result.setText(String.valueOf(Math.round((weight * 0.000000001) * 10000) / 10000.0));
+                        tv_Result.setText(String.valueOf(Math.round((weight * 0.000000001) * 1000000000) / 1000000000.0));
                         break;
                 }
                 break;
             case 2:
                 switch(res){
                     case 0: // 그램 -> 캐럿
-                        tv_Result.setText(String.valueOf(Math.round((weight * 5) * 10000) / 10000.0));
+                        tv_Result.setText(String.valueOf(Math.round((weight * 5) * 1000000000) / 1000000000.0));
                         break;
                     case 1: // 그램 -> 밀리그램
-                        tv_Result.setText(String.valueOf(Math.round((weight * 1000) * 10000) / 10000.0));
+                        tv_Result.setText(String.valueOf(Math.round((weight * 1000) * 1000000000) / 1000000000.0));
                         break;
                     case 2: // 그램 -> 그램
                         tv_Result.setText(weight + "");
                         break;
                     case 3: // 그램 -> 킬로그램
-                        tv_Result.setText(String.valueOf(Math.round((weight * 0.001) * 10000) / 10000.0));
+                        tv_Result.setText(String.valueOf(Math.round((weight * 0.001) * 1000000000) / 1000000000.0));
                         break;
                     case 4: // 그램 -> 파운드
-                        tv_Result.setText(String.valueOf(Math.round((weight * 0.00220462) * 10000) / 10000.0));
+                        tv_Result.setText(String.valueOf(Math.round((weight * 0.00220462) * 1000000000) / 1000000000.0));
                         break;
                     case 5: // 그램 -> 톤
-                        tv_Result.setText(String.valueOf(Math.round((weight * 0.000001) * 10000) / 10000.0));
+                        tv_Result.setText(String.valueOf(Math.round((weight * 0.000001) * 1000000000) / 1000000000.0));
                         break;
                 }
                 break;
             case 3:
                 switch(res){
                     case 0: // 킬로그램 -> 캐럿
-                        tv_Result.setText(String.valueOf(Math.round((weight * 5000) * 10000) / 10000.0));
+                        tv_Result.setText(String.valueOf(Math.round((weight * 5000) * 1000000000) / 1000000000.0));
                         break;
                     case 1: // 킬로그램 -> 밀리그램
-                        tv_Result.setText(String.valueOf(Math.round((weight * 1000000) * 10000) / 10000.0));
+                        tv_Result.setText(String.valueOf(Math.round((weight * 1000000) * 1000000000) / 1000000000.0));
                         break;
                     case 2: // 킬로그램 -> 그램
-                        tv_Result.setText(String.valueOf(Math.round((weight * 1000) * 10000) / 10000.0));
+                        tv_Result.setText(String.valueOf(Math.round((weight * 1000) * 1000000000) / 1000000000.0));
                         break;
                     case 3: // 킬로그램 -> 킬로그램
                         tv_Result.setText(weight + "");
                         break;
                     case 4: // 킬로그램 -> 파운드
-                        tv_Result.setText(String.valueOf(Math.round((weight * 2.20462) * 10000) / 10000.0));
+                        tv_Result.setText(String.valueOf(Math.round((weight * 2.20462) * 1000000000) / 1000000000.0));
                         break;
                     case 5: // 킬로그램 -> 톤
-                        tv_Result.setText(String.valueOf(Math.round((weight * 0.001) * 10000) / 10000.0));
+                        tv_Result.setText(String.valueOf(Math.round((weight * 0.001) * 1000000000) / 1000000000.0));
                         break;
                 }
                 break;
             case 4:
                 switch(res){
                     case 0: // 파운드 -> 캐럿
-                        tv_Result.setText(String.valueOf(Math.round((weight * 2267.96) * 10000) / 10000.0));
+                        tv_Result.setText(String.valueOf(Math.round((weight * 2267.96) * 1000000000) / 1000000000.0));
                         break;
                     case 1: // 파운드 -> 밀리그램
-                        tv_Result.setText(String.valueOf(Math.round((weight * 453592) * 10000) / 10000.0));
+                        tv_Result.setText(String.valueOf(Math.round((weight * 453592) * 1000000000) / 1000000000.0));
                         break;
                     case 2: // 파운드 -> 그램
-                        tv_Result.setText(String.valueOf(Math.round((weight * 453.592) * 10000) / 10000.0));
+                        tv_Result.setText(String.valueOf(Math.round((weight * 453.592) * 1000000000) / 1000000000.0));
                         break;
                     case 3: // 파운드 -> 킬로그램
-                        tv_Result.setText(String.valueOf(Math.round((weight * 0.453592) * 10000) / 10000.0));
+                        tv_Result.setText(String.valueOf(Math.round((weight * 0.453592) * 1000000000) / 1000000000.0));
                         break;
                     case 4: // 파운드 -> 파운드
                         tv_Result.setText(weight + "");
                         break;
                     case 5: // 파운드 -> 톤
-                        tv_Result.setText(String.valueOf(Math.round((weight * 0.00045359) * 10000) / 10000.0));
+                        tv_Result.setText(String.valueOf(Math.round((weight * 0.00045359) * 1000000000) / 1000000000.0));
                         break;
                 }
                 break;
             case 5:
                 switch(res){
                     case 0: // 톤 -> 캐럿
-                        tv_Result.setText(String.valueOf(Math.round((weight * 5000000) * 10000) / 10000.0));
+                        tv_Result.setText(String.valueOf(Math.round((weight * 5000000) * 1000000000) / 1000000000.0));
                         break;
                     case 1: // 톤 -> 밀리그램
-                        tv_Result.setText(String.valueOf(Math.round((weight * 1000000000) * 10000) / 10000.0));
+                        tv_Result.setText(String.valueOf(Math.round((weight * 1000000000) * 1000000000) / 1000000000.0));
                         break;
                     case 2: // 톤 -> 그램
-                        tv_Result.setText(String.valueOf(Math.round((weight * 1000000) * 10000) / 10000.0));
+                        tv_Result.setText(String.valueOf(Math.round((weight * 1000000) * 1000000000) / 1000000000.0));
                         break;
                     case 3: // 톤 -> 킬로그램
-                        tv_Result.setText(String.valueOf(Math.round((weight * 1000) * 10000) / 10000.0));
+                        tv_Result.setText(String.valueOf(Math.round((weight * 1000) * 1000000000) / 1000000000.0));
                         break;
                     case 4: // 톤 -> 파운드
-                        tv_Result.setText(String.valueOf(Math.round((weight * 2204.62) * 10000) / 10000.0));
+                        tv_Result.setText(String.valueOf(Math.round((weight * 2204.62) * 1000000000) / 1000000000.0));
                         break;
                     case 5: // 톤 -> 톤
                         tv_Result.setText(weight + "");

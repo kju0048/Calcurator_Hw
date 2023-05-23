@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Calculator</string>
+    <string name="exchange_rate_api_key">988834e83c3aa05762d89b5c</string>
 </resources>

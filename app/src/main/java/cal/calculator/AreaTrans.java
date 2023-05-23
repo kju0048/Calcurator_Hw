@@ -97,6 +97,36 @@ public class AreaTrans extends AppCompatActivity {
                     startActivity(in);
                     finish();
                 }
+
+                if(id == R.id.menu_AngleTrans){
+                    Intent in = new Intent(getApplicationContext(), AngleTrans.class);
+                    startActivity(in);
+                    finish();
+                }
+
+                if(id == R.id.menu_DataTrans){
+                    Intent in = new Intent(getApplicationContext(), DataTrans.class);
+                    startActivity(in);
+                    finish();
+                }
+
+                if(id == R.id.menu_ExchangeTrans){
+                    Intent in = new Intent(getApplicationContext(), ExchangeTrans.class);
+                    startActivity(in);
+                    finish();
+                }
+
+                if(id == R.id.menu_lengTrans){
+                    Intent in = new Intent(getApplicationContext(), LengthTrans.class);
+                    startActivity(in);
+                    finish();
+                }
+
+                if(id == R.id.menu_SpeedTrans){
+                    Intent in = new Intent(getApplicationContext(), SpeedTrans.class);
+                    startActivity(in);
+                    finish();
+                }
                 return true;
             }
         });

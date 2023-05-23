@@ -91,6 +91,12 @@ public class DefaultCal extends AppCompatActivity {
                 int id = item.getItemId();
                 //String title = item.getTitle().toString();
 
+                if(id == R.id.menu_lengTrans){
+                    Intent in = new Intent(getApplicationContext(), LengthTrans.class);
+                    startActivity(in);
+                    finish();
+                }
+
                 if(id == R.id.menu_defCal){
                     Intent in = new Intent(getApplicationContext(), DefaultCal.class);
                     startActivity(in);
@@ -123,6 +129,30 @@ public class DefaultCal extends AppCompatActivity {
 
                 if(id == R.id.menu_timeTrans){
                     Intent in = new Intent(getApplicationContext(), TimeTrans.class);
+                    startActivity(in);
+                    finish();
+                }
+
+                if(id == R.id.menu_AngleTrans){
+                    Intent in = new Intent(getApplicationContext(), AngleTrans.class);
+                    startActivity(in);
+                    finish();
+                }
+
+                if(id == R.id.menu_DataTrans){
+                    Intent in = new Intent(getApplicationContext(), DataTrans.class);
+                    startActivity(in);
+                    finish();
+                }
+
+                if(id == R.id.menu_ExchangeTrans){
+                    Intent in = new Intent(getApplicationContext(), ExchangeTrans.class);
+                    startActivity(in);
+                    finish();
+                }
+
+                if(id == R.id.menu_SpeedTrans){
+                    Intent in = new Intent(getApplicationContext(), SpeedTrans.class);
                     startActivity(in);
                     finish();
                 }

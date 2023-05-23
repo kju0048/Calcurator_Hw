@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class TimeTrans extends AppCompatActivity {
+public class SpeedTrans extends AppCompatActivity {
 
     DrawerLayout drawerLayout;
     NavigationView navigationView;
@@ -41,7 +41,7 @@ public class TimeTrans extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_time_trans);
+        setContentView(R.layout.activity_speed_trans);
 
         this.init();
 
@@ -105,12 +105,6 @@ public class TimeTrans extends AppCompatActivity {
                     finish();
                 }
 
-                if(id == R.id.menu_lengTrans){
-                    Intent in = new Intent(getApplicationContext(), LengthTrans.class);
-                    startActivity(in);
-                    finish();
-                }
-
                 if(id == R.id.menu_DataTrans){
                     Intent in = new Intent(getApplicationContext(), DataTrans.class);
                     startActivity(in);
@@ -125,6 +119,12 @@ public class TimeTrans extends AppCompatActivity {
 
                 if(id == R.id.menu_SpeedTrans){
                     Intent in = new Intent(getApplicationContext(), SpeedTrans.class);
+                    startActivity(in);
+                    finish();
+                }
+
+                if(id == R.id.menu_lengTrans){
+                    Intent in = new Intent(getApplicationContext(), LengthTrans.class);
                     startActivity(in);
                     finish();
                 }
@@ -249,7 +249,6 @@ public class TimeTrans extends AppCompatActivity {
                         tv_Result.setText(String.valueOf(formatResult(Math.round(time * 3.17098e-14))));
                         break;
                 }
-                break;
             case 2:
                 switch (res) {
                     case 0: // 초 -> 마이크로초

@@ -9,6 +9,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
+import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -24,14 +26,33 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 
-public class TempTrans extends AppCompatActivity {
+import android.os.AsyncTask;
+import android.widget.TextView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
+
+public class ExchangeTrans extends AppCompatActivity {
 
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     ActionBarDrawerToggle drawerToggle;
 
-    TextView tv_Expression;
-    TextView tv_Result;
+    TextView tv_Expression; // 입력 값
+    TextView tv_Result; // 결과 값
     List<Integer> checkList; // -1: 이콜, 0: 연산자, 1: 숫자, 2: . / 예외 발생을 막는 리스트
 
     Spinner sp_Exp, sp_Res;
@@ -41,7 +62,7 @@ public class TempTrans extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_temp_trans);
+        setContentView(R.layout.activity_exchange_trans);
 
         this.init();
 
@@ -134,7 +155,7 @@ public class TempTrans extends AppCompatActivity {
 
         // 입력값 스피너 구현
         sp_Exp = (Spinner) findViewById(R.id.exp_select);
-        String[] exp_str = getResources().getStringArray(R.array.temp_array);
+        String[] exp_str = getResources().getStringArray(R.array.exchange_array);
         ArrayAdapter<String> exp_adapter = new ArrayAdapter<String>(this, R.layout.spinner_dropdown_item, exp_str);
         exp_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sp_Exp.setAdapter(exp_adapter);
@@ -152,7 +173,7 @@ public class TempTrans extends AppCompatActivity {
 
         // 출력값 스피너 구현
         sp_Res = (Spinner) findViewById(R.id.res_select);
-        String[] res_str = getResources().getStringArray(R.array.temp_array);
+        String[] res_str = getResources().getStringArray(R.array.exchange_array);
         ArrayAdapter<String> res_adapter = new ArrayAdapter<String>(this, R.layout.spinner_dropdown_item, res_str);
         res_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sp_Res.setAdapter(res_adapter);
@@ -190,51 +211,198 @@ public class TempTrans extends AppCompatActivity {
         changeSpinner(exp, res);
     }
 
-    // 0. 섭씨  1. 화씨  2. 절대 온도
-    public void changeSpinner(int exp, int res){
-        double temp = Double.parseDouble(tv_Expression.getText().toString());
-        switch(exp){
-            case 0:
-                switch(res){
-                    case 0: // 섭씨 -> 섭씨
-                        tv_Result.setText(temp + "");
+    // 0. 원(한국)  1. 달러(미국)  2. 유로(유럽)  3. 옌(일본)  4. 루블(러시아)  5. 위안(중국)
+    public void changeSpinner(int exp, int res) {
+        double amount = Double.parseDouble(tv_Expression.getText().toString());
+        double result = 0.0;
+
+        String apiKey = getResources().getString(R.string.exchange_rate_api_key);
+        String baseUrl = "https://v6.exchangerate-api.com/v6/988834e83c3aa05762d89b5c/latest/";
+
+        String targetCurrency = ""; // Initialize targetCurrency variable
+
+        switch (exp) {
+            case 0: // 한국 원화 (KRW)
+                baseUrl += "KRW";
+                switch (res) {
+                    case 0: // 한국 원화 -> 한국 원화
+                        result = amount;
                         break;
-                    case 1: // 섭씨 -> 화씨
-                        tv_Result.setText(String.valueOf(Math.round((temp * 1.8) + 32 * 100) / 100.0));
+                    case 1: // 한국 원화 -> 달러(미국)
+                        targetCurrency = "USD";
                         break;
-                    case 2: // 섭씨 -> 절대 온도
-                        tv_Result.setText(String.valueOf(Math.round((temp + 273.15) * 100) / 100.0));
+                    case 2: // 한국 원화 -> 유로(유럽)
+                        targetCurrency = "EUR";
+                        break;
+                    case 3: // 한국 원화 -> 옌(일본)
+                        targetCurrency = "JPY";
+                        break;
+                    case 4: // 한국 원화 -> 루블(러시아)
+                        targetCurrency = "RUB";
+                        break;
+                    case 5: // 한국 원화 -> 위안(중국)
+                        targetCurrency = "CNY";
                         break;
                 }
                 break;
-            case 1:
-                switch(res){
-                    case 0: // 화씨 -> 섭씨
-                        tv_Result.setText(String.valueOf(Math.round((temp - 32) / 1.8 * 100) / 100.0));
+            case 1: // 달러(미국)
+                baseUrl += "USD";
+                switch (res) {
+                    case 0: // 달러(미국) -> 원화(한국)
+                        targetCurrency = "KRW";
                         break;
-                    case 1: // 화씨 -> 화씨
-                        tv_Result.setText(temp + "");
+                    case 1: // 달러(미국) -> 달러(미국)
+                        result = amount;
                         break;
-                    case 2: // 화씨 -> 절대온도
-                        tv_Result.setText(String.valueOf(Math.round((((temp - 32) / 1.8) + 273.15) * 100) / 100.0));
+                    case 2: // 달러(미국) -> 유로(유럽)
+                        targetCurrency = "EUR";
+                        break;
+                    case 3: // 달러(미국) -> 옌(일본)
+                        targetCurrency = "JPY";
+                        break;
+                    case 4: // 달러(미국) -> 루블(러시아)
+                        targetCurrency = "RUB";
+                        break;
+                    case 5: // 달러(미국) -> 위안(중국)
+                        targetCurrency = "CNY";
                         break;
                 }
                 break;
-            case 2:
-                switch(res){
-                    case 0: // 절대 온도 -> 섭씨
-                        tv_Result.setText(String.valueOf(Math.round((temp - 273.15) * 100) / 100.0));
+            case 2: // 유로(유럽)
+                baseUrl += "EUR";
+                switch (res) {
+                    case 0: // 유로(유럽) -> 원화(한국)
+                        targetCurrency = "KRW";
                         break;
-                    case 1: // 절대 온도 -> 화씨
-                        tv_Result.setText(String.valueOf(Math.round((((temp - 273.15) * 1.8) + 32) * 100) / 100.0));
+                    case 1: // 유로(유럽) -> 달러(미국)
+                        targetCurrency = "USD";
                         break;
-                    case 2: // 절대 온도 -> 절대 온도
-                        tv_Result.setText(temp + "");
+                    case 2: // 유로(유럽) -> 유로(유럽)
+                        result = amount;
+                        break;
+                    case 3: // 유로(유럽) -> 옌(일본)
+                        targetCurrency = "JPY";
+                        break;
+                    case 4: // 유로(유럽) -> 루블(러시아)
+                        targetCurrency = "RUB";
+                        break;
+                    case 5: // 유로(유럽) -> 위안(중국)
+                        targetCurrency = "CNY";
+                        break;
+                }
+                break;
+            case 3: // 옌(일본)
+                baseUrl += "JPY";
+                switch (res) {
+                    case 0: // 옌(일본) -> 원화(한국)
+                        targetCurrency = "KRW";
+                        break;
+                    case 1: // 옌(일본) -> 달러(미국)
+                        targetCurrency = "USD";
+                        break;
+                    case 2: // 옌(일본) -> 유로(유럽)
+                        targetCurrency = "EUR";
+                        break;
+                    case 3: // 옌(일본) -> 옌(일본)
+                        result = amount;
+                        break;
+                    case 4: // 옌(일본) -> 루블(러시아)
+                        targetCurrency = "RUB";
+                        break;
+                    case 5: // 옌(일본) -> 위안(중국)
+                        targetCurrency = "CNY";
+                        break;
+                }
+                break;
+            case 4: // 루블(러시아)
+                baseUrl += "RUB";
+                switch (res) {
+                    case 0: // 루블(러시아) -> 원화(한국)
+                        targetCurrency = "KRW";
+                        break;
+                    case 1: // 루블(러시아) -> 달러(미국)
+                        targetCurrency = "USD";
+                        break;
+                    case 2: // 루블(러시아) -> 유로(유럽)
+                        targetCurrency = "EUR";
+                        break;
+                    case 3: // 루블(러시아) -> 옌(일본)
+                        targetCurrency = "JPY";
+                        break;
+                    case 4: // 루블(러시아) -> 루블(러시아)
+                        result = amount;
+                        break;
+                    case 5: // 루블(러시아) -> 위안(중국)
+                        targetCurrency = "CNY";
+                        break;
+                }
+                break;
+            case 5: // 위안(중국)
+                baseUrl += "CNY";
+                switch (res) {
+                    case 0: // 위안(중국) -> 원화(한국)
+                        targetCurrency = "KRW";
+                        break;
+                    case 1: // 위안(중국) -> 달러(미국)
+                        targetCurrency = "USD";
+                        break;
+                    case 2: // 위안(중국) -> 유로(유럽)
+                        targetCurrency = "EUR";
+                        break;
+                    case 3: // 위안(중국) -> 옌(일본)
+                        targetCurrency = "JPY";
+                        break;
+                    case 4: // 위안(중국) -> 루블(러시아)
+                        targetCurrency = "RUB";
+                        break;
+                    case 5: // 위안(중국) -> 위안(중국)
+                        result = amount;
                         break;
                 }
                 break;
         }
+
+        if (!targetCurrency.isEmpty()) {
+            final String finalTargetCurrency = targetCurrency;
+            final double finalAmount = amount;
+
+            String url = baseUrl + "?apiKey=" + apiKey;
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                    (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            try {
+                                JSONObject conversionRates = response.getJSONObject("conversion_rates");
+                                if (conversionRates.has(finalTargetCurrency)) {
+                                    double exchangeRate = conversionRates.getDouble(finalTargetCurrency);
+                                    double finalResult = finalAmount * exchangeRate;
+                                    tv_Result.setText(String.valueOf(finalResult));
+                                } else {
+                                    // 대상 통화에 대한 환율 정보가 없을 경우 에러 처리
+                                    tv_Result.setText("환율 정보를 찾을 수 없습니다.");
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            error.printStackTrace();
+                        }
+                    });
+
+            // Add the request to the RequestQueue.
+            RequestQueue queue = Volley.newRequestQueue(this);
+            queue.add(jsonObjectRequest);
+        } else {
+            tv_Result.setText(String.valueOf(result));
+        }
     }
+
+
 
     void init() {
         tv_Expression = findViewById(R.id.tv_expression);

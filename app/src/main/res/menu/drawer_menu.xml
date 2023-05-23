@@ -24,5 +24,17 @@
         <item android:id="@+id/menu_timeTrans"
             android:title="시간변환기"
             android:icon="@drawable/calimg"/>
+        <item android:id="@+id/menu_AngleTrans"
+            android:title="각도변환기"
+            android:icon="@drawable/calimg"/>
+        <item android:id="@+id/menu_DataTrans"
+            android:title="데이터변환기"
+            android:icon="@drawable/calimg"/>
+        <item android:id="@+id/menu_ExchangeTrans"
+            android:title="환율변환기"
+            android:icon="@drawable/calimg"/>
+        <item android:id="@+id/menu_SpeedTrans"
+            android:title="속도변환기"
+            android:icon="@drawable/calimg"/>
     </group>
 </menu>

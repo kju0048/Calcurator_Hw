@@ -21,14 +21,29 @@
         android:theme="@style/Theme.Calculator"
         tools:targetApi="31">
         <activity
+            android:name=".SpeedTrans"
+            android:exported="false" />
+        <activity
+            android:name=".AngleTrans"
+            android:exported="false" />
+        <activity
+            android:name=".LengthTrans"
+            android:exported="false" />
+        <activity
+            android:name=".ExchangeTrans"
+            android:exported="false" />
+        <activity
+            android:name=".DataTrans"
+            android:exported="false" />
+        <activity
             android:name=".AreaTrans"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".WeightTrans"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".TimeTrans"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".ProgrammerCal"
             android:exported="false" />
