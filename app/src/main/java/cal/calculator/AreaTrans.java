@@ -248,7 +248,6 @@ public class AreaTrans extends AppCompatActivity {
                         break;
                     case 1: // 평방미터 -> 평방밀리미터
                         tv_Result.setText(String.valueOf(Math.round((area * 1000000) * 10000) / 10000.0));
-
                         break;
                     case 2: // 평방미터 -> 평방센티미터
                         tv_Result.setText(String.valueOf(Math.round((area * 10000) * 10000) / 10000.0));
