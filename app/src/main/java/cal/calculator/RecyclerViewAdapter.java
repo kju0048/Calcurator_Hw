@@ -12,12 +12,14 @@ import androidx.recyclerview.widget.RecyclerView;
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
     private String[] mData;
+    private String[] mData2;
     private LayoutInflater mInflater;
     private ItemClickListener mClickListener;
 
-    RecyclerViewAdapter(Context context, String[] data) {
+    RecyclerViewAdapter(Context context, String[] data, String[] data2) {
         this.mInflater = LayoutInflater.from(context);
         this.mData = data;
+        this.mData2 = data2;
     }
 
     @Override
@@ -29,7 +31,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.myTextView.setText(mData[position]);
+        if (position == 0 && mData2[0] == "XX"){
+            holder.myTextView2.setText("");
+            holder.myTextView.setText(mData[position]);
+            return;
+        }
+        holder.myTextView2.setText(mData[position]);
+        holder.myTextView.setText(mData2[position] + " =");
     }
 
     @Override
@@ -38,11 +46,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView myTextView;
+        TextView myTextView, myTextView2;
 
         ViewHolder(View itemView) {
             super(itemView);
             myTextView = itemView.findViewById(R.id.frag_tv);
+            myTextView2 = itemView.findViewById(R.id.frag_res);
             itemView.setOnClickListener(this);
         }
 

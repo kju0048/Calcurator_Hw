@@ -1,16 +1,25 @@
 package cal.calculator;
 
+import android.app.Application;
+import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 
+
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.ImageButton;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -18,12 +27,16 @@ import java.util.ArrayList;
  * Use the {@link Memory#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Memory extends Fragment implements RecyclerViewAdapter.ItemClickListener {
+public class Memory extends Fragment implements RecyclerViewAdapter.ItemClickListener, View.OnClickListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 
+    String FILENAME = "";
+
+    CustomDividerItemDecoration itemDecoration;
     private RecyclerViewAdapter rAdapter;
+    ViewGroup defv;
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -65,21 +78,77 @@ public class Memory extends Fragment implements RecyclerViewAdapter.ItemClickLis
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        String[] data = {"AAAA", "BBBB", "CCCC" , "CCCC" , "CCCC" , "CCCC" , "CCCC" , "CCCC"};
-        ViewGroup v = (ViewGroup) inflater.inflate(R.layout.fragment_memory, container, false);
-        RecyclerView rv = v.findViewById(R.id.recView);
 
 
-        rv.setLayoutManager(new LinearLayoutManager(getActivity()));
-        rAdapter = new RecyclerViewAdapter(getActivity(), data);
+        Bundle bundle = getArguments();
+        ArrayList<String> al, el;
+        al = bundle.getStringArrayList("key1");
+        el = bundle.getStringArrayList("key2");
+        String[] array = new String[al.size()];
+        String[] array2 = new String[el.size()];
+        int size = 0;
+        for(String t : al){
+            array[size++] = t;
+        }
+        size = 0;
+        for(String k : el){
+            array2[size++] = k;
+        }
+
+
+        defv = (ViewGroup) inflater.inflate(R.layout.fragment_memory, container, false);
+        ImageButton cl_button = defv.findViewById(R.id.close_button);
+        ImageButton tr_button = defv.findViewById(R.id.trash_button);
+        cl_button.setOnClickListener(this);
+        tr_button.setOnClickListener(this);
+        RecyclerView rv = defv.findViewById(R.id.recView);
+
+        rAdapter = new RecyclerViewAdapter(getActivity(), array, array2);
+
+
+        itemDecoration = new CustomDividerItemDecoration(10F, Color.DKGRAY);
+        rv.addItemDecoration(itemDecoration);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext(), LinearLayoutManager.VERTICAL, false);
+
+        rv.setLayoutManager(layoutManager);
         rv.setAdapter(rAdapter);
 
 
-        return v;
+        return defv;
     }
 
     @Override
     public void onItemClick(View view, int position) {
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        int vId = v.getId();
+        String arr1[] = {"아직 기록이 없음"}, arr2[] = {"XX"};
+
+        if(vId == R.id.close_button){
+            FragmentManager manager = getActivity().getSupportFragmentManager();
+            manager.beginTransaction().remove(Memory.this).commit();
+            manager.popBackStack();
+        }
+        else if(vId == R.id.trash_button){
+            RecyclerView rv = defv.findViewById(R.id.recView);
+            rv.removeItemDecoration(itemDecoration);
+            RecyclerViewAdapter cAdapter = new RecyclerViewAdapter(getActivity(), arr1, arr2);
+            rv.setAdapter(cAdapter);
+
+            try {
+                FILENAME = "MemoryClear";
+                FileOutputStream fos = getContext().openFileOutput(FILENAME, Context.MODE_PRIVATE);
+                fos.write("1".getBytes());
+                fos.close();
+            } catch (IOException e) {
+            }
+
+
+
+
+        }
     }
 }

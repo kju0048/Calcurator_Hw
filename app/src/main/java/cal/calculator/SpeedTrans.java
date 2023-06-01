@@ -134,7 +134,7 @@ public class SpeedTrans extends AppCompatActivity {
 
         // 입력값 스피너 구현
         sp_Exp = (Spinner) findViewById(R.id.exp_select);
-        String[] exp_str = getResources().getStringArray(R.array.time_array);
+        String[] exp_str = getResources().getStringArray(R.array.speed_array);
         ArrayAdapter<String> exp_adapter = new ArrayAdapter<String>(this, R.layout.spinner_dropdown_item, exp_str);
         exp_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sp_Exp.setAdapter(exp_adapter);
@@ -152,7 +152,7 @@ public class SpeedTrans extends AppCompatActivity {
 
         // 출력값 스피너 구현
         sp_Res = (Spinner) findViewById(R.id.res_select);
-        String[] res_str = getResources().getStringArray(R.array.time_array);
+        String[] res_str = getResources().getStringArray(R.array.speed_array);
         ArrayAdapter<String> res_adapter = new ArrayAdapter<String>(this, R.layout.spinner_dropdown_item, res_str);
         res_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sp_Res.setAdapter(res_adapter);
@@ -190,239 +190,148 @@ public class SpeedTrans extends AppCompatActivity {
         changeSpinner(exp, res);
     }
 
-    // 0.년 1.주 2.일 3.시간 4.분 5.초 6.밀리초 7.마이크로초
+    // 0.미터/초 1.미터/시간 2.킬로미터/초 3.킬로미터/시간 4.노트 5.마하
     public void changeSpinner(int exp, int res) {
-        double time = Double.parseDouble(tv_Expression.getText().toString());
+        double speed = Double.parseDouble(tv_Expression.getText().toString());
+        DecimalFormat decimalFormat = new DecimalFormat("#.#####"); // 소수점 이하 5자리까지 표기
         switch (exp) {
             case 0:
                 switch (res) {
-                    case 0: // 마이크로초 -> 마이크로초
-                        tv_Result.setText(formatResult(time));
+                    case 0: // 미터/초 -> 미터/초
+                        tv_Result.setText(speed + "");
                         break;
-                    case 1: // 마이크로초 -> 밀리초
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 0.001))));
+                    case 1: // 미터/초 -> 미터/시간
+                        tv_Result.setText(String.valueOf(Math.round(speed * 3600)));
                         break;
-                    case 2: // 마이크로초 -> 초
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 1.e-6))));
+                    case 2: // 미터/초 -> 킬로미터/초
+                        tv_Result.setText(decimalFormat.format(speed * 0.001));
                         break;
-                    case 3: // 마이크로초 -> 분
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 1.66667e-08))));
+                    case 3: // 미터/초 -> 킬로미터/시간
+                        tv_Result.setText(decimalFormat.format(speed * 3.6));
                         break;
-                    case 4: // 마이크로초 -> 시간
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 2.777778e-10))));
+                    case 4: // 미터/초 -> 노트
+                        tv_Result.setText(decimalFormat.format(speed * 1.943844));
                         break;
-                    case 5: // 마이크로초 -> 일
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 1.15741e-11))));
-                        break;
-                    case 6: // 마이크로초 -> 주
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 1.65344e-12))));
-                        break;
-                    case 7: // 마이크로초 -> 년
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 3.17098e-14))));
+                    case 5: // 미터/초 -> 마하
+                        tv_Result.setText(decimalFormat.format(speed * 0.00293858));
                         break;
                 }
                 break;
             case 1:
                 switch (res) {
-                    case 0: // 밀리초 -> 마이크로초
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 1000))));
+                    case 0: // 미터/시간 -> 미터/초
+                        tv_Result.setText(decimalFormat.format(speed * 2.78e-4));
                         break;
-                    case 1: // 밀리초 -> 밀리초
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time))));
+                    case 1: // 미터/시간 -> 미터/시간
+                        tv_Result.setText(speed + "");
                         break;
-                    case 2: // 밀리초 -> 초
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 1.e-6))));
+                    case 2: // 미터/시간 -> 킬로미터/초
+                        tv_Result.setText(decimalFormat.format(speed * 2.7778e-7));
                         break;
-                    case 3: // 밀리초 -> 분
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 1.66667e-08))));
+                    case 3: // 미터/시간 -> 킬로미터/시간
+                        tv_Result.setText(decimalFormat.format(speed * 0.001));
                         break;
-                    case 4: // 밀리초 -> 시간
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 2.777778e-10))));
+                    case 4: // 미터/시간 -> 노트
+                        tv_Result.setText(decimalFormat.format(speed * 0.00054));
                         break;
-                    case 5: // 밀리초 -> 일
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 1.15741e-11))));
-                        break;
-                    case 6: // 밀리초 -> 주
-                        tv_Result.setText(formatResult(time * 1.65344e-12));
-                        break;
-                    case 7: // 밀리초 -> 년
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 3.17098e-14))));
+                    case 5: // 미터/시간 -> 마하
+                        tv_Result.setText(decimalFormat.format(speed * 8.1699e-7));
                         break;
                 }
+                break;
             case 2:
                 switch (res) {
-                    case 0: // 초 -> 마이크로초
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 1000000))));
+                    case 0: // 킬로미터/초 -> 미터/초
+                        tv_Result.setText(String.valueOf(formatResult(Math.round(speed * 1000))));
                         break;
-                    case 1: // 초 -> 밀리초
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 1000))));
+                    case 1: // 킬로미터/초 -> 미터/시간
+                        tv_Result.setText(String.valueOf(formatResult(Math.round(speed * 3600000))));
                         break;
-                    case 2: // 초 -> 초
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time))));
+                    case 2: // 킬로미터/초 -> 킬로미터/초
+                        tv_Result.setText(speed + "");
                         break;
-                    case 3: // 초 -> 분
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 0.0166666667))));
+                    case 3: // 킬로미터/초 -> 킬로미터/시간
+                        tv_Result.setText(String.valueOf(formatResult(Math.round(speed * 3600))));
                         break;
-                    case 4: // 초 -> 시간
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 2.777778e-4))));
+                    case 4: // 킬로미터/초 -> 노트
+                        tv_Result.setText(decimalFormat.format(speed * 1943.84449));
                         break;
-                    case 5: // 초 -> 일
-                        tv_Result.setText(formatResult(time * 1.15741e-5));
-                        break;
-                    case 6: // 초 -> 주
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 1.6534e-6))));
-                        break;
-                    case 7: // 초 -> 년
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 3.17e-8))));
+                    case 5: // 킬로미터/초 -> 마하
+                        tv_Result.setText(decimalFormat.format(speed * 2.941176));
                         break;
                 }
                 break;
             case 3:
                 switch (res) {
-                    case 0: // 분 -> 마이크로초
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 60) * 1000000)));
+                    case 0: // 킬로미터/시간 -> 미터/초
+                        tv_Result.setText(decimalFormat.format(speed * 0.277778));
                         break;
-                    case 1: // 분 -> 밀리초
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 60) * 1000)));
+                    case 1: // 킬로미터/시간 -> 미터/시간
+                        tv_Result.setText(String.valueOf(formatResult(Math.round(speed * 1000))));
                         break;
-                    case 2: // 분 -> 초
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 60))));
+                    case 2: // 킬로미터/시간 -> 킬로미터/초
+                        tv_Result.setText(decimalFormat.format(speed * 0.000278));;
                         break;
-                    case 3: // 분 -> 분
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time))));
+                    case 3: // 킬로미터/시간 -> 킬로미터/시간
+                        tv_Result.setText(speed + "");
                         break;
-                    case 4: // 분 -> 시간
-                        tv_Result.setText(formatResult(time * 0.0166666667));
+                    case 4: // 킬로미터/시간 -> 노트
+                        tv_Result.setText(decimalFormat.format(speed * 0.539957));
                         break;
-                    case 5: // 분 -> 일
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 6.944444e-4))));
-                        break;
-                    case 6: // 분 -> 주
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 9.92063e-5))));
-                        break;
-                    case 7: // 분 -> 년
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 1.9026e-6))));
+                    case 5: // 킬로미터/시간 -> 마하
+                        tv_Result.setText(decimalFormat.format(speed * 0.000817));
                         break;
                 }
-                break;
             case 4:
                 switch (res) {
-                    case 0: // 시간 -> 마이크로초
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 60 * 60) * 1000000)));
+                    case 0: // 노트 -> 미터/초
+                        tv_Result.setText(decimalFormat.format(speed * 0.514444));
                         break;
-                    case 1: // 시간 -> 밀리초
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 60 * 60) * 1000)));
+                    case 1: // 노트 -> 미터/시간
+                        tv_Result.setText(String.valueOf(formatResult(Math.round(speed * 1852))));
                         break;
-                    case 2: // 시간 -> 초
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 60 * 60))));
+                    case 2: // 노트 -> 킬로미터/초
+                        tv_Result.setText(decimalFormat.format(speed * 0.000514));
                         break;
-                    case 3: // 시간 -> 분
-                        tv_Result.setText(formatResult(time * 60));
+                    case 3: // 노트 -> 킬로미터/시간
+                        tv_Result.setText(decimalFormat.format(speed * 1.852));
                         break;
-                    case 4: // 시간 -> 시간
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 60))));
+                    case 4: // 노트 -> 노트
+                        tv_Result.setText(speed + "");
                         break;
-                    case 5: // 시간 -> 일
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 0.0416667))));
-                        break;
-                    case 6: // 시간 -> 주
-                        tv_Result.setText(String.valueOf(formatResult(Math.round((time * 5.952375e-3)))));
-                        break;
-                    case 7: // 시간 -> 년
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 1.14155e-4))));
+                    case 5: // 노트 -> 마하
+                        tv_Result.setText(decimalFormat.format(speed * 0.00151152));
                         break;
                 }
                 break;
             case 5:
                 switch (res) {
-                    case 0: // 일 -> 마이크로초
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 24 * 60 * 60) * 1000000)));
+                    case 0: // 마하 -> 미터/초
+                        tv_Result.setText(String.valueOf(formatResult(Math.round(speed * 340))));
                         break;
-                    case 1: // 일 -> 밀리초
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 24 * 60 * 60) * 1000)));
+                    case 1: // 마하 -> 미터/시간
+                        tv_Result.setText(String.valueOf(formatResult(Math.round(speed * 1224000))));
                         break;
-                    case 2: // 일 -> 초
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 24 * 60 * 60))));
+                    case 2: // 마하 -> 킬로미터/초
+                        tv_Result.setText(decimalFormat.format(speed * 0.34));
                         break;
-                    case 3: // 일 -> 분
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 24 * 60))));
+                    case 3: // 마하 -> 킬로미터/시간
+                        tv_Result.setText(String.valueOf(formatResult(Math.round(speed * 1224))));
                         break;
-                    case 4: // 일 -> 시간
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 24))));
+                    case 4: // 마하 -> 노트
+                        tv_Result.setText(decimalFormat.format(661.47));
                         break;
-                    case 5: // 일 -> 일
-                        tv_Result.setText(formatResult(time));
-                        break;
-                    case 6: // 일 -> 주
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 0.142857))));
-                        break;
-                    case 7: // 일 -> 년
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 2.738e-3))));
-                        break;
-                }
-                break;
-            case 6:
-                switch (res) {
-                    case 0: // 주 -> 마이크로초
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 7 * 24 * 60 * 60) * 1000000)));
-                        break;
-                    case 1: // 주 -> 밀리초
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 7 * 24 * 60 * 60) * 1000)));
-                        break;
-                    case 2: // 주 -> 초
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 7 * 24 * 60 * 60))));
-                        break;
-                    case 3: // 주 -> 분
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 7 * 24 * 60))));
-                        break;
-                    case 4: // 주 -> 시간
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 7 * 24))));
-                        break;
-                    case 5: // 주 -> 일
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 7.0192))));
-                        break;
-                    case 6: // 주 -> 주
-                        tv_Result.setText(formatResult(time));
-                        break;
-                    case 7: // 주 -> 년
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 0.019165))));
-                        break;
-                }
-                break;
-            case 7:
-                switch (res) {
-                    case 0: // 년 -> 마이크로초
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 365 * 24 * 60 * 60) * 1000000)));
-                        break;
-                    case 1: // 년 -> 밀리초
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 365 * 24 * 60 * 60) * 1000)));
-                        break;
-                    case 2: // 년 -> 초
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 365 * 24 * 60 * 60))));
-                        break;
-                    case 3: // 년 -> 분
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 365 * 24 * 60))));
-                        break;
-                    case 4: // 년 -> 시간
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 365 * 24))));
-                        break;
-                    case 5: // 년 -> 일
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 365.25))));
-                        break;
-                    case 6: // 년 -> 주
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time * 52.17857))));
-                        break;
-                    case 7: // 년 -> 년
-                        tv_Result.setText(String.valueOf(formatResult(Math.round(time))));
+                    case 5: // 마하 -> 마하
+                        tv_Result.setText(speed + "");
                         break;
                 }
                 break;
         }
     }
 
-    private String formatResult(double time) {
+    private String formatResult(double speed) {
         DecimalFormat formatter = new DecimalFormat("#,###");
-        return formatter.format(time);
+        return formatter.format(speed);
     }
 
     void init() {

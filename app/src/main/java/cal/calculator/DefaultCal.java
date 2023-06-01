@@ -9,6 +9,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -28,6 +29,8 @@ import com.google.android.material.navigation.NavigationView;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
@@ -37,9 +40,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 
-public class DefaultCal extends AppCompatActivity {
+public class DefaultCal extends AppCompatActivity{
 
     //SERVER
+
     private Handler mHandler;
     private Socket socket;
     private DataOutputStream dos;
@@ -57,6 +61,8 @@ public class DefaultCal extends AppCompatActivity {
     Stack<String> operatorStack; // 연산자 스택
     List<String> infixList; // 중위 표기
     List<String> postfixList; // 후위 표기
+    ArrayList<String> expSave; // 계산식 저장
+    ArrayList<String> resultSave; // 결과 저장
 
     Boolean resultSet = false; // 마지막 동작이 = 인지
 
@@ -74,10 +80,33 @@ public class DefaultCal extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
+        String temps;
+        try {
+            FileInputStream fis = openFileInput("MemoryClear");
+            byte[] buffer = new byte[fis.available()];
+            fis.read(buffer);
+            temps = new String(buffer);
+            fis.close();
+            Toast.makeText(getApplicationContext(), temps, Toast.LENGTH_SHORT).show();
+            if (temps.equals("1")){
+                changeMemory();
+                expSave.clear();
+                resultSave.clear();
+            }
+
+        } catch (IOException e) {
+        }
+
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction ft = manager.beginTransaction();
+        Memory memory = new Memory();
+        Bundle bundle = new Bundle(2);
+        bundle.putStringArrayList("key1", resultSave);
+        bundle.putStringArrayList("key2", expSave);
+        memory.setArguments(bundle);
 
-        ft.replace(R.id.frag_view, new Memory(), "one");
+
+        ft.replace(R.id.frag_view, memory, "one");
         ft.commitAllowingStateLoss();
         return true;
     }
@@ -242,6 +271,8 @@ public class DefaultCal extends AppCompatActivity {
     }
 
     void init() {
+        expSave = new ArrayList<>();
+        resultSave = new ArrayList<>();
         tv_Expression = findViewById(R.id.tv_expression);
         tv_Result = findViewById(R.id.tv_result);
         checkList = new ArrayList<>();
@@ -592,6 +623,23 @@ public class DefaultCal extends AppCompatActivity {
     // 최종 결과
     void result () {
         int i = 0;
+        String temps;
+
+        try {
+            FileInputStream fis = openFileInput("MemoryClear");
+            byte[] buffer = new byte[fis.available()];
+            fis.read(buffer);
+            temps = new String(buffer);
+            fis.close();
+            if (temps.equals("1")){
+                changeMemory();
+                expSave.clear();
+                resultSave.clear();
+            }
+
+        } catch (IOException e) {
+        }
+
         infixToPostfix();
         while (postfixList.size() != 1) {
             if (!isNumber(postfixList.get(i))) {
@@ -602,14 +650,28 @@ public class DefaultCal extends AppCompatActivity {
         }
         double temp = Double.parseDouble(postfixList.remove(0));
         temp = Double.valueOf(Math.round(temp * 100000) / 100000.0);
-        if (temp % 1 == 0){
-            tv_Result.setText(Integer.toString((int)temp));
-        } else{
+        if (temp % 1 == 0) {
+            tv_Result.setText(Integer.toString((int) temp));
+        } else {
             tv_Result.setText(Double.toString(temp));
         }
+
+        expSave.add(tv_Expression.getText().toString());
+        resultSave.add(tv_Result.getText().toString());
         //tv_Result.setText(postfixList.remove(0));
         infixList.clear();
         resultSet = true;
+
+
     }
 
+    void changeMemory(){
+        try {
+            String FILENAME = "MemoryClear";
+            FileOutputStream fos = openFileOutput(FILENAME, Context.MODE_PRIVATE);
+            fos.write("0".getBytes());
+            fos.close();
+        } catch (IOException e) {
+        }
+    }
 }

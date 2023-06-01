@@ -67,4 +67,12 @@
         <item>라디안(Radian)</item>
         <item>그라디안(Gradian)</item>
     </string-array>
+    <string-array name="speed_array">
+        <item>미터/초</item>
+        <item>미터/시간</item>
+        <item>킬로미터/초</item>
+        <item>킬로미터/시간</item>
+        <item>노트</item>
+        <item>마하</item>
+    </string-array>
 </resources>
