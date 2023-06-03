@@ -87,7 +87,6 @@ public class DefaultCal extends AppCompatActivity{
             fis.read(buffer);
             temps = new String(buffer);
             fis.close();
-            Toast.makeText(getApplicationContext(), temps, Toast.LENGTH_SHORT).show();
             if (temps.equals("1")){
                 changeMemory();
                 expSave.clear();

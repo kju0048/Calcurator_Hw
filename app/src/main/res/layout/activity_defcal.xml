@@ -81,6 +81,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="0dp"
                         android:layout_weight="1"
+                        android:weightSum="4"
                         >
 
                         <Button
@@ -93,6 +94,7 @@
                             android:layout_margin="5dp"
                             android:textColor="@color/white"
                             android:onClick="btPic"
+                            android:layout_weight="1"
                             android:textSize="18sp" />
 
                         <Button
@@ -104,6 +106,7 @@
                             android:layout_margin="5dp"
                             android:onClick="btCap"
                             android:textColor="@color/white"
+                            android:layout_weight="1"
                             android:textSize="18sp" />
 
                         <Button
@@ -115,6 +118,7 @@
                             android:layout_margin="5dp"
                             android:textColor="@color/black"
                             android:onClick="clearClick"
+                            android:layout_weight="1"
                             android:textSize="18sp" />
 
                         <Button
@@ -126,12 +130,14 @@
                             android:layout_margin="5dp"
                             android:textColor="@color/black"
                             android:onClick="deleteClick"
+                            android:layout_weight="1"
                             android:textSize="18sp" />
                     </TableRow>
                     <TableRow
                         android:layout_width="wrap_content"
                         android:layout_height="0dp"
-                        android:layout_weight="1">
+                        android:layout_weight="1"
+                        android:weightSum="4">
 
                         <Button
                             android:id="@+id/bt_1divx"
@@ -142,6 +148,7 @@
                             android:layout_margin="5dp"
                             android:textColor="@color/black"
                             android:onClick="fracClick"
+                            android:layout_weight="1"
                             android:textSize="18sp" />
 
                         <Button
@@ -153,6 +160,7 @@
                             android:layout_margin="5dp"
                             android:textColor="@color/black"
                             android:onClick="btxx"
+                            android:layout_weight="1"
                             android:textSize="18sp" />
 
                         <Button
@@ -164,6 +172,7 @@
                             android:layout_margin="5dp"
                             android:textColor="@color/black"
                             android:onClick="btRoot"
+                            android:layout_weight="1"
                             android:textSize="18sp" />
 
                         <Button
@@ -175,12 +184,14 @@
                             android:layout_margin="5dp"
                             android:textColor="@color/black"
                             android:onClick="btClick"
+                            android:layout_weight="1"
                             android:textSize="18sp" />
                     </TableRow>
                     <TableRow
                         android:layout_width="wrap_content"
                         android:layout_height="0dp"
-                        android:layout_weight="1">
+                        android:layout_weight="1"
+                        android:weightSum="4">
 
                         <Button
                             android:id="@+id/bt_7"
@@ -191,6 +202,7 @@
                             android:layout_margin="5dp"
                             android:textColor="@color/black"
                             android:onClick="btClick"
+                            android:layout_weight="1"
                             android:textSize="18sp" />
 
                         <Button
@@ -202,6 +214,7 @@
                             android:layout_margin="5dp"
                             android:textColor="@color/black"
                             android:onClick="btClick"
+                            android:layout_weight="1"
                             android:textSize="18sp" />
 
                         <Button
@@ -213,6 +226,7 @@
                             android:layout_margin="5dp"
                             android:textColor="@color/black"
                             android:onClick="btClick"
+                            android:layout_weight="1"
                             android:textSize="18sp" />
 
                         <Button
@@ -224,12 +238,14 @@
                             android:layout_margin="5dp"
                             android:textColor="@color/black"
                             android:onClick="btClick"
+                            android:layout_weight="1"
                             android:textSize="18sp" />
                     </TableRow>
                     <TableRow
                         android:layout_width="wrap_content"
                         android:layout_height="0dp"
-                        android:layout_weight="1">
+                        android:layout_weight="1"
+                        android:weightSum="4">
                         <Button
                             android:id="@+id/bt_4"
                             android:layout_width="wrap_content"
@@ -239,6 +255,7 @@
                             android:layout_margin="5dp"
                             android:textColor="@color/black"
                             android:onClick="btClick"
+                            android:layout_weight="1"
                             android:textSize="18sp" />
 
                         <Button
@@ -250,6 +267,7 @@
                             android:layout_margin="5dp"
                             android:textColor="@color/black"
                             android:onClick="btClick"
+                            android:layout_weight="1"
                             android:textSize="18sp" />
 
                         <Button
@@ -261,6 +279,7 @@
                             android:layout_margin="5dp"
                             android:textColor="@color/black"
                             android:onClick="btClick"
+                            android:layout_weight="1"
                             android:textSize="18sp" />
 
                         <Button
@@ -272,12 +291,14 @@
                             android:layout_margin="5dp"
                             android:textColor="@color/black"
                             android:onClick="btClick"
+                            android:layout_weight="1"
                             android:textSize="18sp" />
                     </TableRow>
                     <TableRow
                         android:layout_width="wrap_content"
                         android:layout_height="0dp"
-                        android:layout_weight="1">
+                        android:layout_weight="1"
+                        android:weightSum="4">
 
                         <Button
                             android:id="@+id/bt_1"
@@ -288,6 +309,7 @@
                             android:layout_margin="5dp"
                             android:textColor="@color/black"
                             android:onClick="btClick"
+                            android:layout_weight="1"
                             android:textSize="18sp" />
 
                         <Button
@@ -299,6 +321,7 @@
                             android:layout_margin="5dp"
                             android:textColor="@color/black"
                             android:onClick="btClick"
+                            android:layout_weight="1"
                             android:textSize="18sp" />
 
                         <Button
@@ -310,6 +333,7 @@
                             android:layout_margin="5dp"
                             android:textColor="@color/black"
                             android:onClick="btClick"
+                            android:layout_weight="1"
                             android:textSize="18sp" />
 
                         <Button
@@ -321,11 +345,13 @@
                             android:layout_margin="5dp"
                             android:textColor="@color/black"
                             android:onClick="btClick"
+                            android:layout_weight="1"
                             android:textSize="18sp" />
                     </TableRow>
                     <TableRow
                         android:layout_width="wrap_content"
                         android:layout_height="0dp"
+                        android:weightSum="4"
                         android:layout_weight="1">
 
                         <Button
@@ -337,6 +363,7 @@
                             android:layout_margin="5dp"
                             android:textColor="@color/black"
                             android:onClick="negaClick"
+                            android:layout_weight="1"
                             android:textSize="18sp" />
 
                         <Button
@@ -348,6 +375,7 @@
                             android:layout_margin="5dp"
                             android:textColor="@color/black"
                             android:onClick="btClick"
+                            android:layout_weight="1"
                             android:textSize="18sp" />
 
                         <Button
@@ -359,6 +387,7 @@
                             android:layout_margin="5dp"
                             android:textColor="@color/black"
                             android:onClick="btClick"
+                            android:layout_weight="1"
                             android:textSize="18sp" />
 
                         <Button
@@ -370,6 +399,7 @@
                             android:layout_margin="5dp"
                             android:textColor="@color/black"
                             android:onClick="btResult"
+                            android:layout_weight="1"
                             android:textSize="18sp" />
                     </TableRow>
                 </TableLayout>
