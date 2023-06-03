@@ -4,7 +4,7 @@
     <item
         android:id="@+id/menu_search"
         android:title="search"
-        android:icon="@drawable/time_icon_white"
+        android:icon="@drawable/time_icon"
         app:showAsAction="always" />
 
 </menu>
