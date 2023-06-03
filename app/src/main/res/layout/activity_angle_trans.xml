@@ -5,8 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/layout_drawer"
-    tools:context=".DefaultCal">
+    android:id="@+id/layout_drawer">
 
     <!-- 콘텐츠 영억 -->
     <LinearLayout
@@ -96,11 +95,53 @@ s
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:stretchColumns="*">
+                    <TableRow
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:weightSum="3"
+                        android:layout_weight="1">
+                        <Button
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:background="#EAF6FF"
+                            android:outlineSpotShadowColor="#EAF6FF"
+                            android:outlineAmbientShadowColor="#EAF6FF"
+                            android:layout_margin="5dp"
+                            android:textColor="@color/black"
+                            android:layout_weight="1"
+                            android:textSize="18sp" />
+
+                        <Button
+                            android:id="@+id/bt_clear"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/buttonshape_blue"
+                            android:text="C"
+                            android:layout_margin="5dp"
+                            android:textColor="@color/black"
+                            android:onClick="clearClick"
+                            android:layout_weight="1"
+                            android:textSize="18sp" />
+
+                        <Button
+                            android:id="@+id/bt_delete"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/buttonshape_gray"
+                            android:text="DEL"
+                            android:layout_margin="5dp"
+                            android:textColor="@color/black"
+                            android:onClick="deleteClick"
+                            android:layout_weight="1"
+                            android:textSize="18sp" />
+                    </TableRow>
+
+
 
                     <TableRow
                         android:layout_width="wrap_content"
                         android:layout_height="0dp"
-                        android:weightSum="4"
+                        android:weightSum="3"
                         android:layout_weight="1">
 
                         <Button
@@ -139,19 +180,11 @@ s
                             android:layout_weight="1"
                             android:textSize="18sp" />
 
-                        <Button
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:background="@drawable/buttonshape_gray"
-                            android:layout_margin="5dp"
-                            android:textColor="@color/black"
-                            android:layout_weight="1"
-                            android:textSize="18sp" />
                     </TableRow>
                     <TableRow
                         android:layout_width="wrap_content"
                         android:layout_height="0dp"
-                        android:weightSum="4"
+                        android:weightSum="3"
                         android:layout_weight="1">
                         <Button
                             android:id="@+id/bt_4"
@@ -188,20 +221,11 @@ s
                             android:onClick="btClick"
                             android:layout_weight="1"
                             android:textSize="18sp" />
-
-                        <Button
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:background="@drawable/buttonshape_gray"
-                            android:layout_margin="5dp"
-                            android:textColor="@color/black"
-                            android:layout_weight="1"
-                            android:textSize="18sp" />
                     </TableRow>
                     <TableRow
                         android:layout_width="wrap_content"
                         android:layout_height="0dp"
-                        android:weightSum="4"
+                        android:weightSum="3"
                         android:layout_weight="1">
 
                         <Button
@@ -240,22 +264,12 @@ s
                             android:layout_weight="1"
                             android:textSize="18sp" />
 
-                        <Button
-                            android:id="@+id/bt_delete"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:background="@drawable/buttonshape_gray"
-                            android:text="DEL"
-                            android:layout_margin="5dp"
-                            android:textColor="@color/black"
-                            android:onClick="deleteClick"
-                            android:layout_weight="1"
-                            android:textSize="18sp" />
+
                     </TableRow>
                     <TableRow
                         android:layout_width="wrap_content"
                         android:layout_height="0dp"
-                        android:weightSum="4"
+                        android:weightSum="3"
                         android:layout_weight="1">
 
                         <Button
@@ -294,17 +308,7 @@ s
                             android:layout_weight="1"
                             android:textSize="18sp" />
 
-                        <Button
-                            android:id="@+id/bt_clear"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:background="@drawable/buttonshape_blue"
-                            android:text="C"
-                            android:layout_margin="5dp"
-                            android:textColor="@color/black"
-                            android:onClick="clearClick"
-                            android:layout_weight="1"
-                            android:textSize="18sp" />
+
                     </TableRow>
                 </TableLayout>
             </LinearLayout>
