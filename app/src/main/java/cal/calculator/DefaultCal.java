@@ -1,17 +1,7 @@
 package cal.calculator;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -20,10 +10,17 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.navigation.NavigationView;
 
@@ -32,9 +29,7 @@ import java.io.DataOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -48,10 +43,7 @@ public class DefaultCal extends AppCompatActivity{
     private Socket socket;
     private DataOutputStream dos;
     private DataInputStream dis;
-    private static String SERVER_IP = "192.168.219.102";
-    private static int SERVER_PORT = 8080;
 
-    private static int BUF_SIZE = 100;
 
 
 
@@ -215,7 +207,34 @@ public class DefaultCal extends AppCompatActivity{
 
     }
 
-    public void btPic(View v){
+    void addNumber_socket (String str){
+        checkList.add(1); // 숫자가 들어왔는지 체크리스트에 표시
+        tv_Expression.append(str); // UI
+        resultSet = false;
+    }
+    public void btPic(View v){ // 그림판 액티비티 호출
+        Intent intent = new Intent(DefaultCal.this, ImageCal.class);
+        startActivityForResult(intent, 1);
+    }
+
+    public void btCap(View v){ // 사진 촬영 액티비티 호출
+        Intent intent = new Intent(DefaultCal.this, CameraActivity.class);
+        startActivityForResult(intent, 2);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK){
+            Intent get_intent = getIntent();
+
+            String[] Textarray = get_intent.getStringArrayExtra("textarray");
+            String t = "";
+            for(int i=0; i<Textarray.length; i++){
+                t += Textarray[i];
+            }
+            Toast.makeText(this, t, Toast.LENGTH_SHORT).show();
+        }
     }
 
 
