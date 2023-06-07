@@ -207,11 +207,6 @@ public class DefaultCal extends AppCompatActivity{
 
     }
 
-    void addNumber_socket (String str){
-        checkList.add(1); // 숫자가 들어왔는지 체크리스트에 표시
-        tv_Expression.append(str); // UI
-        resultSet = false;
-    }
     public void btPic(View v){ // 그림판 액티비티 호출
         Intent intent = new Intent(DefaultCal.this, ImageCal.class);
         startActivityForResult(intent, 1);
@@ -226,14 +221,26 @@ public class DefaultCal extends AppCompatActivity{
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == RESULT_OK){
-            Intent get_intent = getIntent();
+            resultSet = false;
+            String str = data.getStringExtra("expr");
+            init();
+            String[] t = str.split("");
+            String realExp = "";
+            for(int i=0; i<t.length; i++){
+                if(isNumber(t[i])) {
+                    realExp += t[i];
+                    checkList.add(1);
+                } else if(t[i].equals("+") || t[i].equals("-") || t[i].equals("x") || t[i].equals("X") || t[i].equals("/")){
+                    if(t[i].equals("x")){
+                        realExp += " X ";
+                    } else{
+                        realExp += " " + t[i] + " ";
+                    }
 
-            String[] Textarray = get_intent.getStringArrayExtra("textarray");
-            String t = "";
-            for(int i=0; i<Textarray.length; i++){
-                t += Textarray[i];
+                    checkList.add(0);
+                }
             }
-            Toast.makeText(this, t, Toast.LENGTH_SHORT).show();
+            tv_Expression.setText(realExp);
         }
     }
 

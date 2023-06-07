@@ -67,8 +67,8 @@ public class ImageCal extends AppCompatActivity {
         btnCancle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(ImageCal.this, msg, Toast.LENGTH_SHORT).show();
-
+                setResult(RESULT_CANCELED);
+                finish();
             }
         });
 
@@ -80,6 +80,8 @@ public class ImageCal extends AppCompatActivity {
                 String imagePath = dir.getAbsolutePath() + File.separator + "my_drawing1.png";
                 Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
                 sendImageToServer(bitmap);
+
+
             }
         });
     }
@@ -124,6 +126,11 @@ public class ImageCal extends AppCompatActivity {
                     socket.close();
 
                     msg = new String(data1,"UTF-8");
+
+                    Intent in = new Intent();
+                    in.putExtra("expr", msg);
+                    setResult(RESULT_OK, in);
+                    finish();
                 } catch (IOException e){
                     e.printStackTrace();
                 }
