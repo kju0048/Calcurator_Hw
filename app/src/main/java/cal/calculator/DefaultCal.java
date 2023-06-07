@@ -1,5 +1,7 @@
 package cal.calculator;
 
+import static java.lang.Math.sqrt;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -236,7 +238,6 @@ public class DefaultCal extends AppCompatActivity{
                     } else{
                         realExp += " " + t[i] + " ";
                     }
-
                     checkList.add(0);
                 }
             }
@@ -481,12 +482,8 @@ public class DefaultCal extends AppCompatActivity{
         List<String> li = new ArrayList<String>();
         Collections.addAll(li, ex);
         String temps = li.remove(li.size() - 1);
-        double dtemps = Double.parseDouble(temps) * Double.parseDouble(temps);
-        if (dtemps % 1 == 0){
-            li.add(String.valueOf(Integer.parseInt(temps) * Integer.parseInt(temps)));
-        } else{
-            li.add(String.valueOf(dtemps));
-        }
+        double dtemps = sqrt(Double.parseDouble(temps));
+        li.add(String.valueOf(dtemps));
         tv_Expression.setText(TextUtils.join(" ", li));
         resultSet = false;
     }

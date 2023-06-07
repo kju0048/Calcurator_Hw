@@ -3,6 +3,7 @@ package cal.calculator;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -31,6 +32,7 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
 public class ImageCal extends AppCompatActivity {
+    private Bitmap mBitmap;
     private MyPaintView myView;
     private Socket socket;
     private DataOutputStream dos;
@@ -57,6 +59,10 @@ public class ImageCal extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_cal);
+
+        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+
         setTitle("간단한 그림판");
 
         LinearLayout paintLayout = findViewById(R.id.paintLayout);
@@ -76,12 +82,7 @@ public class ImageCal extends AppCompatActivity {
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                myView.saveDrawing();
-                String imagePath = dir.getAbsolutePath() + File.separator + "my_drawing1.png";
-                Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
-                sendImageToServer(bitmap);
-
-
+                sendImageToServer(mBitmap);
             }
         });
     }
@@ -139,7 +140,6 @@ public class ImageCal extends AppCompatActivity {
     }
 
     private class MyPaintView extends View {
-        private Bitmap mBitmap;
         private Canvas mCanvas;
         private Path mPath;
         private Paint mPaint;
@@ -189,24 +189,6 @@ public class ImageCal extends AppCompatActivity {
             return true;
         }
 
-        public void saveDrawing() {
-            String fileName = "my_drawing1.png";
 
-            // SDCard(ExternalStorage) : 외부저장공간
-            // 접근하려면 반드시 AndroidManifest.xml에 권한 설정을 한다.
-            if (!dir.exists())
-                dir.mkdirs();
-
-            File file = new File(dir, fileName);
-            try {
-                FileOutputStream fos = new FileOutputStream(file);
-                mBitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
-                fos.close();
-                Toast.makeText(getApplicationContext(), "그림이 저장되었습니다.", Toast.LENGTH_SHORT).show();
-            } catch (Exception e) {
-                e.printStackTrace();
-                Toast.makeText(getApplicationContext(), "그림 저장에 실패했습니다.", Toast.LENGTH_SHORT).show();
-            }
-        }
     }
 }
