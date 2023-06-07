@@ -57,6 +57,12 @@ public class CameraActivity extends AppCompatActivity {
             }
         }
     }
+
+    public void btn_outc(View v){
+        setResult(RESULT_CANCELED);
+        finish();
+    }
+
     public byte[] convertToBytes(Bitmap bitmap){
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
