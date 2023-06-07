@@ -247,12 +247,12 @@ public class ProgrammerCal extends AppCompatActivity {
         else if (gId == R.id.bt_8) addNumber("8");
         else if (gId == R.id.bt_9) addNumber("9");
         else if (gId == R.id.bt_0) addNumber("0");
-        else if (gId == R.id.bt_A) addNumber("A");
-        else if (gId == R.id.bt_B) addNumber("B");
-        else if (gId == R.id.bt_C) addNumber("C");
-        else if (gId == R.id.bt_D) addNumber("D");
-        else if (gId == R.id.bt_E) addNumber("E");
-        else if (gId == R.id.bt_F) addNumber("F");
+        else if (gId == R.id.bt_A) addNumber("a");
+        else if (gId == R.id.bt_B) addNumber("b");
+        else if (gId == R.id.bt_C) addNumber("c");
+        else if (gId == R.id.bt_D) addNumber("d");
+        else if (gId == R.id.bt_E) addNumber("e");
+        else if (gId == R.id.bt_F) addNumber("f");
         else if (gId == R.id.bt_div) addOperator("/");
         else if (gId == R.id.bt_mul) addOperator("X");
         else if (gId == R.id.bt_add) addOperator("+");
@@ -308,6 +308,7 @@ public class ProgrammerCal extends AppCompatActivity {
         operatorStack.clear();
         postfixList.clear();
         resultSet = false;
+        result = 0;
 
         rb_hex.setText("HEX\t\t\t0");
         rb_dec.setText("DEC\t\t\t0");

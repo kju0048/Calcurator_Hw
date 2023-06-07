@@ -464,9 +464,10 @@ public class DefaultCal extends AppCompatActivity{
 
 
     public void btRoot(View v){
+        double dtemps;
         if(tv_Result.length() != 0){
-            double dtemp = Double.parseDouble(tv_Result.getText().toString()) * Double.parseDouble(tv_Result.getText().toString());
-            tv_Expression.setText(String.valueOf(dtemp));
+            dtemps = sqrt(Double.parseDouble(tv_Result.getText().toString()));
+            tv_Expression.setText(String.valueOf(dtemps));
             tv_Result.setText("");
             checkList.add(1);
             resultSet = false;
@@ -482,7 +483,7 @@ public class DefaultCal extends AppCompatActivity{
         List<String> li = new ArrayList<String>();
         Collections.addAll(li, ex);
         String temps = li.remove(li.size() - 1);
-        double dtemps = sqrt(Double.parseDouble(temps));
+        dtemps = sqrt(Double.parseDouble(temps));
         li.add(String.valueOf(dtemps));
         tv_Expression.setText(TextUtils.join(" ", li));
         resultSet = false;

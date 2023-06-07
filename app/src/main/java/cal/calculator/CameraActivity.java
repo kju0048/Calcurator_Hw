@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -21,14 +23,21 @@ import java.io.IOException;
 import java.net.Socket;
 
 public class CameraActivity extends AppCompatActivity {
-    private ImageView imageView;
+
     private Button btn_picture;
-
+    private Bitmap bitmap=null;
+    private Socket socket;
+    private DataOutputStream dos;
+    private DataInputStream dis;
+    private String msg;
+    private Handler mHandler;
+    private ImageView iv;
     private static final int REQUEST_IMAGE_CODE = 101;
+    private boolean ret = true;
+    private Intent imageTakeIntent;
 
-    File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "MyDrawings");
 
-    private String serverIp = "192.168.0.7";
+    private String serverIp = "192.168.186.106";
     private int serverPort = 7777;
 
 
@@ -38,15 +47,15 @@ public class CameraActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
+        iv = findViewById(R.id.camera_image);
 
-        imageView = findViewById(R.id.camera_image);
-        btn_picture = findViewById(R.id.btn_camera);
-        btn_picture.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                takePicture();
+        if(ret) {
+            ret = false;
+            imageTakeIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            if(imageTakeIntent.resolveActivity(getPackageManager())!= null){
+                startActivityForResult(imageTakeIntent,REQUEST_IMAGE_CODE);
             }
-        });
+        }
     }
     public byte[] convertToBytes(Bitmap bitmap){
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -55,72 +64,59 @@ public class CameraActivity extends AppCompatActivity {
     }
 
     public void sendImageToServer(Bitmap bitmap){
-        byte[] imageBytes = convertToBytes(bitmap);
-
-        new Thread(new Runnable(){
+        iv.setImageBitmap(bitmap);
+        mHandler = new Handler();
+        new Thread(new Runnable() {
             @Override
-            public void run(){
+            public void run() {
+                byte[] imageBytes = convertToBytes(bitmap);
+
                 try {
-                    Socket socket = new Socket(serverIp, serverPort);
-                    DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
-                    dataOutputStream.writeInt(imageBytes.length);
-                    dataOutputStream.write(imageBytes);
-                    dataOutputStream.close();
-
-                    DataInputStream inputStream = new DataInputStream(socket.getInputStream());
-                    String[] array = getImageToServer(inputStream);
-
-                    socket.close();
-
-                    Intent intent = new Intent();
-                    intent.putExtra("textarray",array);
-                    setResult(RESULT_OK, intent);
-                    finish();
-
-
-
+                    socket = new Socket(serverIp, serverPort);
+                } catch (IOException e1) {
+                    Log.w("서버 접속 불가", "서버 접속 불가");
+                }
+                try {
+                    dos = new DataOutputStream(socket.getOutputStream());
+                    dis = new DataInputStream(socket.getInputStream());
                 } catch (IOException e) {
                     e.printStackTrace();
+                    Log.w("버퍼", "버퍼 생성 불가");
+                }
+                try {
+                    dos.writeInt(imageBytes.length);
+                    dos.flush();
 
+                    dos.write(imageBytes);
+                    dos.flush();
+
+                } catch(IOException e){
+                    Log.w("error", "erroe occur");
+                }
+                try{
+                    byte[] data1 = new byte[50];
+                    dis.read(data1, 0, 50);
+                    socket.close();
+
+                    msg = new String(data1,"UTF-8");
+
+                    Intent in = new Intent();
+                    in.putExtra("expr", msg);
+                    setResult(RESULT_OK, in);
+                    finish();
+                } catch (IOException e){
+                    e.printStackTrace();
                 }
             }
         }).start();
-    }
-    public static String[] getImageToServer(DataInputStream inputStream) throws IOException {
-        int len = inputStream.readInt();
-
-        if(len>0){
-            String[] textArray = new String[len];
-
-            for(int i=0; i<len; i++){
-                int textlen = inputStream.readInt();
-                byte[] textBytes = new byte[textlen];
-                inputStream.readFully(textBytes);
-                String text = new String(textBytes);
-                textArray[i] = text;
-            }
-            return textArray;
-        }
-        return null;
-
-    }
-    public void takePicture(){
-        Intent imageTakeIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-        if(imageTakeIntent.resolveActivity(getPackageManager())!= null){
-            startActivityForResult(imageTakeIntent,REQUEST_IMAGE_CODE);
-        }
-
     }
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data){
         super.onActivityResult(requestCode, resultCode, data);
 
         if(requestCode == REQUEST_IMAGE_CODE && resultCode == RESULT_OK){
             Bundle extras = data.getExtras();
-            Bitmap bitmap = (Bitmap) extras.get("data");
+            bitmap = (Bitmap) extras.get("data");
             sendImageToServer(bitmap);
-            imageView.setImageBitmap(bitmap);
-
         }
     }
 }
