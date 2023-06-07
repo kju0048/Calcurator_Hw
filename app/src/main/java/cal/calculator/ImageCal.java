@@ -1,5 +1,6 @@
 package cal.calculator;
 
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -10,6 +11,8 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -25,19 +28,30 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 
 public class ImageCal extends AppCompatActivity {
     private MyPaintView myView;
+    private Socket socket;
+    private DataOutputStream dos;
+    private DataInputStream dis;
+    private String msg;
+    private Handler mHandler;
     private Paint paint;
     private Path path;
     private Bitmap bitmap;
     private Canvas canvas;
     private Button sendButton;
+    DataOutputStream dataOutputStream;
+    DataInputStream inputStream;
+
+    String input_message;
 
     File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "MyDrawings");
 
-    private String serverIp = "192.168.10.114";
+    private String serverIp = "192.168.0.113";
     private int serverPort = 7777;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,8 +67,8 @@ public class ImageCal extends AppCompatActivity {
         btnCancle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                setResult(RESULT_CANCELED);
-                finish();
+                Toast.makeText(ImageCal.this, msg, Toast.LENGTH_SHORT).show();
+
             }
         });
 
@@ -66,7 +80,6 @@ public class ImageCal extends AppCompatActivity {
                 String imagePath = dir.getAbsolutePath() + File.separator + "my_drawing1.png";
                 Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
                 sendImageToServer(bitmap);
-
             }
         });
     }
@@ -77,52 +90,47 @@ public class ImageCal extends AppCompatActivity {
     }
 
     private void sendImageToServer(Bitmap bitmap){
-        byte[] imageBytes = convertToBytes(bitmap);
-        new Thread(new Runnable(){
+        mHandler = new Handler();
+        new Thread(new Runnable() {
             @Override
-            public void run(){
+            public void run() {
+                byte[] imageBytes = convertToBytes(bitmap);
+
                 try {
-                    Socket socket = new Socket(serverIp, serverPort);
-                    DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
-                    dataOutputStream.writeInt(imageBytes.length);
-                    dataOutputStream.write(imageBytes);
-                    dataOutputStream.close();
+                    socket = new Socket(serverIp, serverPort);
+                } catch (IOException e1) {
+                    Log.w("서버 접속 불가", "서버 접속 불가");
+                }
+                try {
+                    dos = new DataOutputStream(socket.getOutputStream());
+                    dis = new DataInputStream(socket.getInputStream());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.w("버퍼", "버퍼 생성 불가");
+                }
+                try {
+                    dos.writeInt(imageBytes.length);
+                    dos.flush();
 
+                    dos.write(imageBytes);
+                    dos.flush();
 
-                    DataInputStream inputStream = new DataInputStream(socket.getInputStream());
-                    String[] array = getImageToServer(inputStream);
-
+                } catch(IOException e){
+                    Log.w("error", "erroe occur");
+                }
+                try{
+                    byte[] data1 = new byte[50];
+                    dis.read(data1, 0, 50);
                     socket.close();
 
-                    Intent intent = new Intent();
-                    intent.putExtra("textarray",array);
-                    setResult(RESULT_OK, intent);
-                    finish();
-
-
-                } catch (IOException e) {
+                    msg = new String(data1,"UTF-8");
+                } catch (IOException e){
                     e.printStackTrace();
                 }
             }
         }).start();
     }
-    public static String[] getImageToServer(DataInputStream inputStream) throws IOException {
-        int len = inputStream.readInt();
 
-        if(len>0){
-            String[] textArray = new String[len];
-
-            for(int i=0; i<len; i++){
-                int textlen = inputStream.readInt();
-                byte[] textBytes = new byte[textlen];
-                inputStream.readFully(textBytes);
-                String text = new String(textBytes);
-                textArray[i] = text;
-            }
-            return textArray;
-        }
-        return null;
-    }
     private class MyPaintView extends View {
         private Bitmap mBitmap;
         private Canvas mCanvas;
