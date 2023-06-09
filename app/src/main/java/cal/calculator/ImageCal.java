@@ -51,7 +51,7 @@ public class ImageCal extends AppCompatActivity {
 
     File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "MyDrawings");
 
-    private String serverIp = "192.168.186.106";
+    private String serverIp = "118.67.135.149";
     private int serverPort = 7777;
 
 

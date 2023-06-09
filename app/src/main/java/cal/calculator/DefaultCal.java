@@ -454,7 +454,8 @@ public class DefaultCal extends AppCompatActivity{
         String temps = li.remove(li.size() - 1);
         double dtemps = Double.parseDouble(temps) * Double.parseDouble(temps);
         if (dtemps % 1 == 0){
-            li.add(String.valueOf(Integer.parseInt(temps) * Integer.parseInt(temps)));
+            String tsl = temps.split("\\.")[0];
+            li.add(String.valueOf(Integer.parseInt(tsl) * Integer.parseInt(tsl)));
         } else{
             li.add(String.valueOf(dtemps));
         }

@@ -286,13 +286,27 @@ public class ProgrammerCal extends AppCompatActivity {
                 checkList.add(3);
                 tv_Expression.setText(tv_Expression.getText() + "( ");
             }
+            else if(checkList.get(checkList.size() - 1) == 4){
+                checkList.add(3);
+                tv_Expression.setText(tv_Expression.getText() + " X ( ");
+            }
+            else{
+                Toast.makeText(getApplicationContext(), "Left Bracket Error", Toast.LENGTH_SHORT).show();
+                return;
+            }
             bracket_count++;
         }
         else if(gId == R.id.bt_rightBracket){
             if(bracket_count == 0 || checkList.get(checkList.size() - 1) == 0){
                 Toast.makeText(getApplicationContext(), "괄호를 입력할 수 없습니다.", Toast.LENGTH_SHORT).show();
                 return;
-            } else{
+            } else if(checkList.get(checkList.size() - 1) == 3){
+                checkList.add(1);
+                checkList.add(4);
+                tv_Expression.setText(tv_Expression.getText() + "0 )");
+            }
+
+            else{
                 checkList.add(4);
                 tv_Expression.setText(tv_Expression.getText() + " )");
             }
@@ -309,6 +323,7 @@ public class ProgrammerCal extends AppCompatActivity {
         postfixList.clear();
         resultSet = false;
         result = 0;
+        bracket_count = 0;
 
         rb_hex.setText("HEX\t\t\t0");
         rb_dec.setText("DEC\t\t\t0");
@@ -318,6 +333,10 @@ public class ProgrammerCal extends AppCompatActivity {
 
     public void deleteClick (View v){
         if (tv_Expression.length() != 0) {
+            if(checkList.get(checkList.size() - 1) == 4){
+                bracket_count--;
+                return;
+            }
             if(checkList.get(checkList.size() - 1) == -1){
                 checkList.remove(checkList.size() - 1);
             }
@@ -352,7 +371,11 @@ public class ProgrammerCal extends AppCompatActivity {
             if (checkList.isEmpty()) { // 처음 연산자 사용 막기
                 Toast.makeText(getApplicationContext(), "첫 입력값은 숫자입니다.", Toast.LENGTH_SHORT).show();
                 return;
-            } else if (checkList.get(checkList.size() - 1) == 0  || checkList.get(checkList.size() - 1) == 2) { // 연산자 두 번 사용, 완벽한 수가 오지 않았을 때 막기
+            } else if (checkList.get(checkList.size() - 1) == 3){
+                Toast.makeText(getApplicationContext(), "괄호 뒤에 연산자가 올 수 없습니다.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+                else if (checkList.get(checkList.size() - 1) == 0  || checkList.get(checkList.size() - 1) == 2) { // 연산자 두 번 사용, 완벽한 수가 오지 않았을 때 막기
 
                 String[] ex = tv_Expression.getText().toString().split(" ");
                 List<String> li = new ArrayList<String>();
@@ -373,10 +396,11 @@ public class ProgrammerCal extends AppCompatActivity {
     }
 
     // 결과 버튼
-    public void btResult (View v){
+    public void btResult (View v) {
 
         if (bracket_count != 0) {
             Toast.makeText(getApplicationContext(), "수식이 정확하지 않습니다.", Toast.LENGTH_SHORT).show();
+            return;
         }
 
         if (tv_Expression.length() == 0) return;
@@ -388,7 +412,6 @@ public class ProgrammerCal extends AppCompatActivity {
         checkList.add(-1);
         result();
     }
-
     public void negaClick (View v){
         if(tv_Result.length() != 0){
             String[] rex = tv_Result.getText().toString().split("");

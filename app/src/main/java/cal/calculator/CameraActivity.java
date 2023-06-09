@@ -37,7 +37,7 @@ public class CameraActivity extends AppCompatActivity {
     private Intent imageTakeIntent;
 
 
-    private String serverIp = "192.168.186.106";
+    private String serverIp = "118.67.135.149";
     private int serverPort = 7777;
 
 
