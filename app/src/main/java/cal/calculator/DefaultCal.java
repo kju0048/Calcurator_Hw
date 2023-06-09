@@ -209,7 +209,7 @@ public class DefaultCal extends AppCompatActivity{
 
     }
 
-    public void btPic(View v){ // 그림판 액티비티 호출
+    public void btPic(View v) throws Exception { // 그림판 액티비티 호출
         Intent intent = new Intent(DefaultCal.this, ImageCal.class);
         startActivityForResult(intent, 1);
     }
@@ -317,6 +317,8 @@ public class DefaultCal extends AppCompatActivity{
             if (li.size() > 0 && !isNumber(li.get(li.size() - 1)))
                 li.add(li.remove(li.size() - 1) + " ");
             tv_Expression.setText(TextUtils.join(" ", li));
+        } else{
+            return;
         }
         tv_Result.setText("");
         resultSet = false;
@@ -330,26 +332,32 @@ public class DefaultCal extends AppCompatActivity{
     }
 
     void addPoint (String str){
-        if (checkList.isEmpty()) {
-            Toast.makeText(getApplicationContext(), ". 을 사용할 수 없습니다.", Toast.LENGTH_SHORT).show();
-            return;
-        } else if (checkList.get(checkList.size() - 1) != 1) {
-            Toast.makeText(getApplicationContext(), ". 을 사용할 수 없습니다.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        // 하나의 수에 . 이 여러 개 오는 것을 막기
-        for (int i = checkList.size() - 2; i >= 0; i--) {
-            int check = checkList.get(i);
-            if (check == 2) {
+        try{
+            if (checkList.isEmpty()) {
+                Toast.makeText(getApplicationContext(), ". 을 사용할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                return;
+            } else if (checkList.get(checkList.size() - 1) != 1) {
                 Toast.makeText(getApplicationContext(), ". 을 사용할 수 없습니다.", Toast.LENGTH_SHORT).show();
                 return;
             }
-            if (check == 0) break;
-            if (check == 1) continue;
+            // 하나의 수에 . 이 여러 개 오는 것을 막기
+            for (int i = checkList.size() - 2; i >= 0; i--) {
+                int check = checkList.get(i);
+                if (check == 2) {
+                    Toast.makeText(getApplicationContext(), ". 을 사용할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (check == 0) break;
+                if (check == 1) continue;
+            }
+            checkList.add(2);
+            tv_Expression.append(str); // UI
+            resultSet = false;
+        } catch(Exception e){
+            init();
+            Toast.makeText(this, "오류가 발생하여 설정이 초기화됩니다.", Toast.LENGTH_SHORT).show();
         }
-        checkList.add(2);
-        tv_Expression.append(str); // UI
-        resultSet = false;
+
     }
 
     // 연산자 버튼
@@ -374,147 +382,173 @@ public class DefaultCal extends AppCompatActivity{
             tv_Expression.append(" " + str + " ");
             resultSet = false;
         } catch (Exception e) {
+            init();
+            Toast.makeText(this, "오류가 발생하여 설정이 초기화됩니다.", Toast.LENGTH_SHORT).show();
             Log.e("addOperator", e.toString());
         }
     }
 
     // 결과 버튼
     public void btResult (View v){
-        if (tv_Expression.length() == 0) return;
-        if (checkList.get(checkList.size() - 1) != 1) {
-            Toast.makeText(getApplicationContext(), "마지막 입력값이 숫자여야 사용가능합니다.", Toast.LENGTH_SHORT).show();
-            return;
+        try {
+            if (tv_Expression.length() == 0) return;
+            if (checkList.get(checkList.size() - 1) != 1) {
+                Toast.makeText(getApplicationContext(), "마지막 입력값이 숫자여야 사용가능합니다.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            Collections.addAll(infixList, tv_Expression.getText().toString().split(" "));
+            checkList.add(-1);
+            result();
+        } catch(Exception e){
+            init();
+            Toast.makeText(this, "오류가 발생하여 설정이 초기화됩니다.", Toast.LENGTH_SHORT).show();
         }
-        Collections.addAll(infixList, tv_Expression.getText().toString().split(" "));
-        checkList.add(-1);
-        result();
     }
 
     public void negaClick (View v){
-        if(tv_Result.length() != 0){
-            String[] rex = tv_Result.getText().toString().split("");
+        try {
 
-            if(!isNumber(rex[0])){
-                String rtemp = tv_Result.getText().toString().substring(1, rex.length);
-                tv_Expression.setText(rtemp);
+            if (tv_Result.length() != 0) {
+                String[] rex = tv_Result.getText().toString().split("");
+
+                if (!isNumber(rex[0])) {
+                    String rtemp = tv_Result.getText().toString().substring(1, rex.length);
+                    tv_Expression.setText(rtemp);
+                    tv_Result.setText("");
+                    checkList.add(1);
+                    resultSet = false;
+                    return;
+                }
+
+                tv_Expression.setText("-" + tv_Result.getText());
+                tv_Result.setText("");
+                checkList.add(1);
+                resultSet = false;
+                return;
+            }
+            if (tv_Expression.length() == 0 || checkList.get(checkList.size() - 1) != 1) {
+                Toast.makeText(getApplicationContext(), "마지막 입력값이 숫자여야 사용가능합니다.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            String[] ex = tv_Expression.getText().toString().split(" ");
+            String[] fex = ex[ex.length - 1].split("");
+
+            List<String> li = new ArrayList<String>();
+            Collections.addAll(li, ex);
+            String temps = li.remove(li.size() - 1);
+
+            if (!isNumber(fex[0])) {
+                List<String> tli = new ArrayList<String>();
+                Collections.addAll(tli, fex);
+                tli.remove(0);
+                li.add(TextUtils.join("", tli));
+            } else
+                li.add("-" + temps);
+            tv_Expression.setText(TextUtils.join(" ", li));
+            resultSet = true;
+        } catch(Exception e){
+            init();
+            Toast.makeText(this, "오류가 발생하여 설정이 초기화됩니다.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void btxx(View v){
+        try {
+
+            if (tv_Result.length() != 0) {
+                double dtemp = Double.parseDouble(tv_Result.getText().toString()) * Double.parseDouble(tv_Result.getText().toString());
+                tv_Expression.setText(String.valueOf(dtemp));
                 tv_Result.setText("");
                 checkList.add(1);
                 resultSet = false;
                 return;
             }
 
-            tv_Expression.setText("-" + tv_Result.getText());
-            tv_Result.setText("");
-            checkList.add(1);
+            if (tv_Expression.length() == 0 || checkList.get(checkList.size() - 1) != 1) {
+                Toast.makeText(getApplicationContext(), "마지막 입력값이 숫자여야 사용가능합니다.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            String[] ex = tv_Expression.getText().toString().split(" ");
+            List<String> li = new ArrayList<String>();
+            Collections.addAll(li, ex);
+            String temps = li.remove(li.size() - 1);
+            double dtemps = Double.parseDouble(temps) * Double.parseDouble(temps);
+            if (dtemps % 1 == 0) {
+                String tsl = temps.split("\\.")[0];
+                li.add(String.valueOf(Long.parseLong(tsl) * Long.parseLong(tsl)));
+            } else {
+                li.add(String.valueOf(dtemps));
+            }
+            tv_Expression.setText(TextUtils.join(" ", li));
             resultSet = false;
-            return;
+        } catch(Exception e){
+            init();
+            Toast.makeText(getApplicationContext(), "오류가 발생하여 설정이 초기화됩니다.", Toast.LENGTH_SHORT).show();
         }
-        if (tv_Expression.length() == 0 || checkList.get(checkList.size() - 1) != 1) {
-            Toast.makeText(getApplicationContext(), "마지막 입력값이 숫자여야 사용가능합니다.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        String[] ex = tv_Expression.getText().toString().split(" ");
-        String[] fex = ex[ex.length -1].split("");
-
-        List<String> li = new ArrayList<String>();
-        Collections.addAll(li, ex);
-        String temps = li.remove(li.size() - 1);
-
-        if(!isNumber(fex[0])){
-            List<String> tli = new ArrayList<String>();
-            Collections.addAll(tli, fex);
-            tli.remove(0);
-            li.add(TextUtils.join("", tli));
-        }
-        else
-            li.add("-" + temps);
-        tv_Expression.setText(TextUtils.join(" ", li));
-        resultSet = true;
-    }
-
-    public void btxx(View v){
-        if(tv_Result.length() != 0){
-            double dtemp = Double.parseDouble(tv_Result.getText().toString()) * Double.parseDouble(tv_Result.getText().toString());
-            tv_Expression.setText(String.valueOf(dtemp));
-            tv_Result.setText("");
-            checkList.add(1);
-            resultSet = false;
-            return;
-        }
-
-        if (tv_Expression.length() == 0 || checkList.get(checkList.size() - 1) != 1) {
-            Toast.makeText(getApplicationContext(), "마지막 입력값이 숫자여야 사용가능합니다.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        String[] ex = tv_Expression.getText().toString().split(" ");
-        List<String> li = new ArrayList<String>();
-        Collections.addAll(li, ex);
-        String temps = li.remove(li.size() - 1);
-        double dtemps = Double.parseDouble(temps) * Double.parseDouble(temps);
-        if (dtemps % 1 == 0){
-            String tsl = temps.split("\\.")[0];
-            li.add(String.valueOf(Integer.parseInt(tsl) * Integer.parseInt(tsl)));
-        } else{
-            li.add(String.valueOf(dtemps));
-        }
-        tv_Expression.setText(TextUtils.join(" ", li));
-        resultSet = false;
     }
 
 
     public void btRoot(View v){
-        double dtemps;
-        if(tv_Result.length() != 0){
-            dtemps = sqrt(Double.parseDouble(tv_Result.getText().toString()));
-            tv_Expression.setText(String.valueOf(dtemps));
-            tv_Result.setText("");
-            checkList.add(1);
+        try {
+            double dtemps;
+            if (tv_Result.length() != 0) {
+                dtemps = sqrt(Double.parseDouble(tv_Result.getText().toString()));
+                tv_Expression.setText(String.valueOf(dtemps));
+                tv_Result.setText("");
+                checkList.add(1);
+                resultSet = false;
+                return;
+            }
+
+            if (tv_Expression.length() == 0 || checkList.get(checkList.size() - 1) != 1) {
+                Toast.makeText(getApplicationContext(), "마지막 입력값이 숫자여야 사용가능합니다.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            String[] ex = tv_Expression.getText().toString().split(" ");
+            List<String> li = new ArrayList<String>();
+            Collections.addAll(li, ex);
+            String temps = li.remove(li.size() - 1);
+            dtemps = sqrt(Double.parseDouble(temps));
+            li.add(String.valueOf(dtemps));
+            tv_Expression.setText(TextUtils.join(" ", li));
             resultSet = false;
-            return;
+        } catch(Exception e){
+            init();
+            Toast.makeText(this, "오류가 발생하여 설정이 초기화됩니다.", Toast.LENGTH_SHORT).show();
         }
-
-        if (tv_Expression.length() == 0 || checkList.get(checkList.size() - 1) != 1) {
-            Toast.makeText(getApplicationContext(), "마지막 입력값이 숫자여야 사용가능합니다.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        String[] ex = tv_Expression.getText().toString().split(" ");
-        List<String> li = new ArrayList<String>();
-        Collections.addAll(li, ex);
-        String temps = li.remove(li.size() - 1);
-        dtemps = sqrt(Double.parseDouble(temps));
-        li.add(String.valueOf(dtemps));
-        tv_Expression.setText(TextUtils.join(" ", li));
-        resultSet = false;
     }
-
 
     // 1/x 버튼
     public void fracClick(View v) {
-        if(tv_Result.length() != 0){
-            tv_Expression.setText("1 / " + tv_Result.getText());
-            tv_Result.setText("");
-            checkList.add(1);
+        try {
+            if (tv_Result.length() != 0) {
+                tv_Expression.setText("1 / " + tv_Result.getText());
+                tv_Result.setText("");
+                checkList.add(1);
+                resultSet = false;
+                return;
+            }
+
+            if (tv_Expression.length() == 0 || checkList.get(checkList.size() - 1) != 1) {
+                Toast.makeText(getApplicationContext(), "마지막 입력값이 숫자여야 사용가능합니다.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            String[] ex = tv_Expression.getText().toString().split(" ");
+            List<String> li = new ArrayList<String>();
+            Collections.addAll(li, ex);
+            String temps = li.remove(li.size() - 1);
+
+            li.add("1 / " + temps);
+            tv_Expression.setText(TextUtils.join(" ", li));
             resultSet = false;
-            return;
+        } catch(Exception e){
+            init();
+            Toast.makeText(this, "오류가 발생하여 설정이 초기화됩니다.", Toast.LENGTH_SHORT).show();
         }
-
-        if (tv_Expression.length() == 0 || checkList.get(checkList.size() - 1) != 1) {
-            Toast.makeText(getApplicationContext(), "마지막 입력값이 숫자여야 사용가능합니다.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-
-        String[] ex = tv_Expression.getText().toString().split(" ");
-        List<String> li = new ArrayList<String>();
-        Collections.addAll(li, ex);
-        String temps = li.remove(li.size() - 1);
-
-        li.add("1 / " + temps);
-        tv_Expression.setText(TextUtils.join(" ", li));
-        resultSet = false;
     }
 
     // 연산자 가중치
@@ -596,45 +630,50 @@ public class DefaultCal extends AppCompatActivity{
 
     // 최종 결과
     void result () {
-        int i = 0;
-        String temps;
-
         try {
-            FileInputStream fis = openFileInput("MemoryClear");
-            byte[] buffer = new byte[fis.available()];
-            fis.read(buffer);
-            temps = new String(buffer);
-            fis.close();
-            if (temps.equals("1")){
-                changeMemory();
-                expSave.clear();
-                resultSave.clear();
+            int i = 0;
+            String temps;
+
+            try {
+                FileInputStream fis = openFileInput("MemoryClear");
+                byte[] buffer = new byte[fis.available()];
+                fis.read(buffer);
+                temps = new String(buffer);
+                fis.close();
+                if (temps.equals("1")) {
+                    changeMemory();
+                    expSave.clear();
+                    resultSave.clear();
+                }
+
+            } catch (IOException e) {
             }
 
-        } catch (IOException e) {
-        }
-
-        infixToPostfix();
-        while (postfixList.size() != 1) {
-            if (!isNumber(postfixList.get(i))) {
-                postfixList.add(i - 2, calculate(postfixList.remove(i - 2), postfixList.remove(i - 2), postfixList.remove(i - 2)));
-                i = -1;
+            infixToPostfix();
+            while (postfixList.size() != 1) {
+                if (!isNumber(postfixList.get(i))) {
+                    postfixList.add(i - 2, calculate(postfixList.remove(i - 2), postfixList.remove(i - 2), postfixList.remove(i - 2)));
+                    i = -1;
+                }
+                i++;
             }
-            i++;
-        }
-        double temp = Double.parseDouble(postfixList.remove(0));
-        temp = Double.valueOf(Math.round(temp * 100000) / 100000.0);
-        if (temp % 1 == 0) {
-            tv_Result.setText(Integer.toString((int) temp));
-        } else {
-            tv_Result.setText(Double.toString(temp));
-        }
+            double temp = Double.parseDouble(postfixList.remove(0));
+            temp = Double.valueOf(Math.round(temp * 100000) / 100000.0);
+            if (temp % 1 == 0) {
+                tv_Result.setText(Long.toString((long) temp));
+            } else {
+                tv_Result.setText(Double.toString(temp));
+            }
 
-        expSave.add(tv_Expression.getText().toString());
-        resultSave.add(tv_Result.getText().toString());
-        //tv_Result.setText(postfixList.remove(0));
-        infixList.clear();
-        resultSet = true;
+            expSave.add(tv_Expression.getText().toString());
+            resultSave.add(tv_Result.getText().toString());
+            //tv_Result.setText(postfixList.remove(0));
+            infixList.clear();
+            resultSet = true;
+        }  catch(Exception e){
+            init();
+            Toast.makeText(this, "오류가 발생하여 설정이 초기화됩니다.", Toast.LENGTH_SHORT).show();
+        }
 
 
     }

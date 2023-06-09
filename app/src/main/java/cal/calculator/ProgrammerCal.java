@@ -39,8 +39,8 @@ public class ProgrammerCal extends AppCompatActivity {
 
     Boolean resultSet = false; // 마지막 동작이 = 인지
 
-    int result = 0;
-
+    long result = 0;
+    String express = "";
 
     DrawerLayout drawerLayout;
     NavigationView navigationView;
@@ -57,8 +57,12 @@ public class ProgrammerCal extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_programmer_cal);
 
-        this.init();
+        rb_hex = findViewById(R.id.bt_hex);
+        rb_dec = findViewById(R.id.bt_dec);
+        rb_oct = findViewById(R.id.bt_oct);
+        rb_bin = findViewById(R.id.bt_bin);
 
+        this.init();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -147,18 +151,15 @@ public class ProgrammerCal extends AppCompatActivity {
             }
         });
 
-        rb_hex = findViewById(R.id.bt_hex);
-        rb_dec = findViewById(R.id.bt_dec);
-        rb_oct = findViewById(R.id.bt_oct);
-        rb_bin = findViewById(R.id.bt_bin);
 
         rg = findViewById(R.id.radioGroup);
         rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
+                int save_mode = cal_mode;
                 if(checkedId == R.id.bt_hex){
                     cal_mode = 0;
-                    tv_Result.setText(Integer.toHexString(result));
+                    tv_Result.setText(Long.toHexString(result));
                 }
                 else if(checkedId == R.id.bt_dec){
                     cal_mode = 1;
@@ -166,19 +167,44 @@ public class ProgrammerCal extends AppCompatActivity {
                 }
                 else if(checkedId == R.id.bt_oct){
                     cal_mode = 2;
-                    tv_Result.setText(Integer.toOctalString(result));
+                    tv_Result.setText(Long.toOctalString(result));
                 }
                 else{
                     cal_mode = 3;
-                    tv_Result.setText(Integer.toBinaryString(result));
+                    tv_Result.setText(Long.toBinaryString(result));
                 }
-                radioChange(cal_mode);
+                radioChange(save_mode, cal_mode);
             }
         });
     }
 
+    void radioChange(int s_mode, int mode){
+        String[] ex = tv_Expression.getText().toString().split(" ");
+        List<String> li = new ArrayList<String>();
+        Collections.addAll(li, ex);
+        List<String> nli = new ArrayList<String>();
+        List<String> kli = new ArrayList<String>();
+        for(String st : li){
+            if(isNumber(st)){
+                switch(s_mode){
+                    case 0:
+                        nli.add(String.valueOf(Long.parseLong(st, 16)));
+                        break;
+                    case 1:
+                        nli.add(st);
+                        break;
+                    case 2:
+                        nli.add(String.valueOf(Long.parseLong(st, 8)));
+                        break;
+                    case 3:
+                        nli.add(String.valueOf(Long.parseLong(st, 2)));
+                        break;
+                }
+            } else{
+                nli.add(st);
+            }
+        }
 
-    void radioChange(int mode){
         int button_id[] = {R.id.bt_0, R.id.bt_1, R.id.bt_2, R.id.bt_3, R.id.bt_4, R.id.bt_5, R.id.bt_6, R.id.bt_7
                         , R.id.bt_8, R.id.bt_9, R.id.bt_A, R.id.bt_B, R.id.bt_C, R.id.bt_D, R.id.bt_E, R.id.bt_F};
         for (int i : button_id){
@@ -186,21 +212,45 @@ public class ProgrammerCal extends AppCompatActivity {
         }
         switch(mode){
             case 0: // 16진수
-                //
+                for(String nt : nli){
+                    if(isNumber(nt)){
+                        kli.add(Long.toHexString(Long.parseLong(nt)));
+                    } else{
+                        kli.add(nt);
+                    }
+                    tv_Expression.setText(TextUtils.join(" ", kli));
+                }
                 break;
             case 1: // 10진수
                 for(int i = 10; i < 16 ; i++){
                     findViewById(button_id[i]).setEnabled(false);
+                    tv_Expression.setText(TextUtils.join(" ", nli));
                 }
                 break;
             case 2: // 8진수
                 for(int i = 8; i < 16 ; i++){
                     findViewById(button_id[i]).setEnabled(false);
                 }
+                for(String nt : nli){
+                    if(isNumber(nt)){
+                        kli.add(Long.toOctalString(Long.parseLong(nt)));
+                    } else{
+                        kli.add(nt);
+                    }
+                    tv_Expression.setText(TextUtils.join(" ", kli));
+                }
                 break;
             case 3: // 2진수
                 for(int i = 2; i < 16 ; i++){
                     findViewById(button_id[i]).setEnabled(false);
+                }
+                for(String nt : nli){
+                    if(isNumber(nt)){
+                        kli.add(Long.toBinaryString(Long.parseLong(nt)));
+                    } else{
+                        kli.add(nt);
+                    }
+                    tv_Expression.setText(TextUtils.join(" ", kli));
                 }
                 break;
         }
@@ -216,6 +266,10 @@ public class ProgrammerCal extends AppCompatActivity {
         postfixList = new ArrayList<>();
         bracketOperatorStack = new Stack<>();
         bracket_post = new ArrayList<>();
+        rb_hex.setText("HEX\t\t\t0");
+        rb_dec.setText("DEC\t\t\t0");
+        rb_oct.setText("OCT\t\t\t0");
+        rb_bin.setText("BIN\t\t\t0");
     }
 
     public void btClick(View v) {
@@ -263,54 +317,51 @@ public class ProgrammerCal extends AppCompatActivity {
     }
 
     public void btBracket(View v){
-        int gId = v.getId();
-        if(gId == R.id.bt_leftBracket){
-            if(resultSet){
-                Toast.makeText(getApplicationContext(), "괄호를 입력할 수 없습니다.", Toast.LENGTH_SHORT).show();
-                return;
+        try {
+            int gId = v.getId();
+            if (gId == R.id.bt_leftBracket) {
+                if (resultSet) {
+                    Toast.makeText(getApplicationContext(), "괄호를 입력할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (checkList.isEmpty()) {
+                    checkList.add(3);
+                    tv_Expression.setText("( ");
+                } else if (checkList.get(checkList.size() - 1) == 1) {
+                    checkList.add(0);
+                    checkList.add(3);
+                    tv_Expression.setText(tv_Expression.getText() + " X ( ");
+                } else if (checkList.get(checkList.size() - 1) == 0) {
+                    checkList.add(3);
+                    tv_Expression.setText(tv_Expression.getText() + "( ");
+                } else if (checkList.get(checkList.size() - 1) == 3) {
+                    checkList.add(3);
+                    tv_Expression.setText(tv_Expression.getText() + "( ");
+                } else if (checkList.get(checkList.size() - 1) == 4) {
+                    checkList.add(3);
+                    tv_Expression.setText(tv_Expression.getText() + " X ( ");
+                } else {
+                    Toast.makeText(getApplicationContext(), "Left Bracket Error", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                bracket_count++;
+            } else if (gId == R.id.bt_rightBracket) {
+                if (bracket_count == 0) {
+                    Toast.makeText(getApplicationContext(), "괄호를 입력할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                    return;
+                } else if (checkList.get(checkList.size() - 1) == 3) {
+                    checkList.add(1);
+                    checkList.add(4);
+                    tv_Expression.setText(tv_Expression.getText() + "0 )");
+                } else {
+                    checkList.add(4);
+                    tv_Expression.setText(tv_Expression.getText() + " )");
+                }
+                bracket_count--;
             }
-            if(checkList.isEmpty()){
-                checkList.add(3);
-                tv_Expression.setText("( ");
-            }
-            else if(checkList.get(checkList.size() - 1) == 1){
-                checkList.add(0);
-                checkList.add(3);
-                tv_Expression.setText(tv_Expression.getText() + " X ( ");
-            }
-            else if(checkList.get(checkList.size() - 1) == 0){
-                checkList.add(3);
-                tv_Expression.setText(tv_Expression.getText() + "( ");
-            }
-            else if(checkList.get(checkList.size() - 1) == 3){
-                checkList.add(3);
-                tv_Expression.setText(tv_Expression.getText() + "( ");
-            }
-            else if(checkList.get(checkList.size() - 1) == 4){
-                checkList.add(3);
-                tv_Expression.setText(tv_Expression.getText() + " X ( ");
-            }
-            else{
-                Toast.makeText(getApplicationContext(), "Left Bracket Error", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            bracket_count++;
-        }
-        else if(gId == R.id.bt_rightBracket){
-            if(bracket_count == 0 || checkList.get(checkList.size() - 1) == 0){
-                Toast.makeText(getApplicationContext(), "괄호를 입력할 수 없습니다.", Toast.LENGTH_SHORT).show();
-                return;
-            } else if(checkList.get(checkList.size() - 1) == 3){
-                checkList.add(1);
-                checkList.add(4);
-                tv_Expression.setText(tv_Expression.getText() + "0 )");
-            }
-
-            else{
-                checkList.add(4);
-                tv_Expression.setText(tv_Expression.getText() + " )");
-            }
-            bracket_count--;
+        } catch(Exception e){
+            init();
+            Toast.makeText(this, "오류가 발생하여 설정이 초기화됩니다.", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -332,30 +383,37 @@ public class ProgrammerCal extends AppCompatActivity {
     }
 
     public void deleteClick (View v){
-        if (tv_Expression.length() != 0) {
-            if(checkList.get(checkList.size() - 1) == 4){
-                bracket_count--;
-                return;
-            }
-            if(checkList.get(checkList.size() - 1) == -1){
+        try {
+            if (tv_Expression.length() != 0) {
+                if (checkList.get(checkList.size() - 1) == 3) {
+                    bracket_count--;
+                    if (bracket_count == -1) {
+                        bracket_count = 0;
+                    }
+                }
+                if (checkList.get(checkList.size() - 1) == -1) {
+                    checkList.remove(checkList.size() - 1);
+                }
                 checkList.remove(checkList.size() - 1);
+                String[] ex = tv_Expression.getText().toString().split(" ");
+                List<String> li = new ArrayList<String>();
+                Collections.addAll(li, ex);
+                li.remove(li.size() - 1);
+                // 마지막이 연산자일 때 " " 빈칸 추가
+                if (li.size() > 0 && !isNumber(li.get(li.size() - 1)))
+                    li.add(li.remove(li.size() - 1) + " ");
+                tv_Expression.setText(TextUtils.join(" ", li));
             }
-            checkList.remove(checkList.size() - 1);
-            String[] ex = tv_Expression.getText().toString().split(" ");
-            List<String> li = new ArrayList<String>();
-            Collections.addAll(li, ex);
-            li.remove(li.size() - 1);
-            // 마지막이 연산자일 때 " " 빈칸 추가
-            if (li.size() > 0 && !isNumber(li.get(li.size() - 1)))
-                li.add(li.remove(li.size() - 1) + " ");
-            tv_Expression.setText(TextUtils.join(" ", li));
+            tv_Result.setText("");
+            rb_hex.setText("HEX\t\t\t0");
+            rb_dec.setText("DEC\t\t\t0");
+            rb_oct.setText("OCT\t\t\t0");
+            rb_bin.setText("BIN\t\t\t0");
+            resultSet = false;
+        } catch(Exception e){
+            init();
+            Toast.makeText(this, "오류가 발생하여 설정이 초기화됩니다.", Toast.LENGTH_SHORT).show();
         }
-        tv_Result.setText("");
-        rb_hex.setText("HEX\t\t\t0");
-        rb_dec.setText("DEC\t\t\t0");
-        rb_oct.setText("OCT\t\t\t0");
-        rb_bin.setText("BIN\t\t\t0");
-        resultSet = false;
     }
 
     // 숫자 버튼
@@ -390,69 +448,78 @@ public class ProgrammerCal extends AppCompatActivity {
             checkList.add(0);
             tv_Expression.append(" " + str + " ");
             resultSet = false;
-        } catch (Exception e) {
-            Log.e("addOperator", e.toString());
+        }  catch(Exception e){
+            init();
+            Toast.makeText(this, "오류가 발생하여 설정이 초기화됩니다.", Toast.LENGTH_SHORT).show();
         }
     }
 
     // 결과 버튼
     public void btResult (View v) {
+        try {
+            if (bracket_count != 0) {
+                Toast.makeText(getApplicationContext(), "수식이 정확하지 않습니다.", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-        if (bracket_count != 0) {
-            Toast.makeText(getApplicationContext(), "수식이 정확하지 않습니다.", Toast.LENGTH_SHORT).show();
-            return;
+            if (tv_Expression.length() == 0) return;
+            if (checkList.get(checkList.size() - 1) != 1 && checkList.get(checkList.size() - 1) != 4) {
+                Toast.makeText(getApplicationContext(), "마지막 입력값이 숫자여야 사용가능합니다.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            Collections.addAll(infixList, tv_Expression.getText().toString().split(" "));
+            checkList.add(-1);
+            result();
+        } catch(Exception e){
+            init();
+            Toast.makeText(this, "오류가 발생하여 설정이 초기화됩니다.", Toast.LENGTH_SHORT).show();
         }
-
-        if (tv_Expression.length() == 0) return;
-        if (checkList.get(checkList.size() - 1) != 1 && checkList.get(checkList.size() - 1) != 4) {
-            Toast.makeText(getApplicationContext(), "마지막 입력값이 숫자여야 사용가능합니다.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        Collections.addAll(infixList, tv_Expression.getText().toString().split(" "));
-        checkList.add(-1);
-        result();
     }
     public void negaClick (View v){
-        if(tv_Result.length() != 0){
-            String[] rex = tv_Result.getText().toString().split("");
+        try{
+            if (tv_Result.length() != 0) {
+                String[] rex = tv_Result.getText().toString().split("");
 
-            if(!isNumber(rex[0])){
-                String rtemp = tv_Result.getText().toString().substring(1, rex.length);
-                tv_Expression.setText(rtemp);
+                if (!isNumber(rex[0])) {
+                    String rtemp = tv_Result.getText().toString().substring(1, rex.length);
+                    tv_Expression.setText(rtemp);
+                    tv_Result.setText("");
+                    checkList.add(1);
+                    resultSet = false;
+                    return;
+                }
+
+                tv_Expression.setText("-" + tv_Result.getText());
                 tv_Result.setText("");
                 checkList.add(1);
                 resultSet = false;
                 return;
             }
+            if (tv_Expression.length() == 0 || checkList.get(checkList.size() - 1) != 1) {
+                Toast.makeText(getApplicationContext(), "마지막 입력값이 숫자여야 사용가능합니다.", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-            tv_Expression.setText("-" + tv_Result.getText());
-            tv_Result.setText("");
-            checkList.add(1);
-            resultSet = false;
-            return;
+            String[] ex = tv_Expression.getText().toString().split(" ");
+            String[] fex = ex[ex.length - 1].split("");
+
+            List<String> li = new ArrayList<String>();
+            Collections.addAll(li, ex);
+            String temps = li.remove(li.size() - 1);
+
+            if (!isNumber(fex[0])) {
+                List<String> tli = new ArrayList<String>();
+                Collections.addAll(tli, fex);
+                tli.remove(0);
+                li.add(TextUtils.join("", tli));
+            } else
+                li.add("-" + temps);
+            tv_Expression.setText(TextUtils.join(" ", li));
+            resultSet = true;
+        } catch(Exception e){
+            init();
+            Toast.makeText(this, "오류가 발생하여 설정이 초기화됩니다.", Toast.LENGTH_SHORT).show();
         }
-        if (tv_Expression.length() == 0 || checkList.get(checkList.size() - 1) != 1) {
-            Toast.makeText(getApplicationContext(), "마지막 입력값이 숫자여야 사용가능합니다.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        String[] ex = tv_Expression.getText().toString().split(" ");
-        String[] fex = ex[ex.length -1].split("");
-
-        List<String> li = new ArrayList<String>();
-        Collections.addAll(li, ex);
-        String temps = li.remove(li.size() - 1);
-
-        if(!isNumber(fex[0])){
-            List<String> tli = new ArrayList<String>();
-            Collections.addAll(tli, fex);
-            tli.remove(0);
-            li.add(TextUtils.join("", tli));
-        }
-        else
-            li.add("-" + temps);
-        tv_Expression.setText(TextUtils.join(" ", li));
-        resultSet = true;
     }
 
     // 연산자 가중치
@@ -496,23 +563,23 @@ public class ProgrammerCal extends AppCompatActivity {
 
     // 계산
     String calculate (String num1, String num2, String op){
-        int first = 0, second = 0, result = 0;
+        long first = 0, second = 0, result = 0;
         switch(cal_mode){
             case 0:
-                first = Integer.parseInt(num1, 16);
-                second = Integer.parseInt(num2, 16);
+                first = Long.parseLong(num1, 16);
+                second = Long.parseLong(num2, 16);
                 break;
             case 1:
-                first = Integer.parseInt(num1);
-                second = Integer.parseInt(num2);
+                first = Long.parseLong(num1);
+                second = Long.parseLong(num2);
                 break;
             case 2:
-                first = Integer.parseInt(num1, 8);
-                second = Integer.parseInt(num2, 8);
+                first = Long.parseLong(num1, 8);
+                second = Long.parseLong(num2, 8);
                 break;
             case 3:
-                first = Integer.parseInt(num1, 2);
-                second = Integer.parseInt(num2, 2);
+                first = Long.parseLong(num1, 2);
+                second = Long.parseLong(num2, 2);
                 break;
         }
         try {
@@ -557,13 +624,13 @@ public class ProgrammerCal extends AppCompatActivity {
 
         switch(cal_mode){
             case 0:
-                return Integer.toHexString(result);
+                return Long.toHexString(result);
             case 1:
                 return String.valueOf(result);
             case 2:
-                return Integer.toOctalString(result);
+                return Long.toOctalString(result);
             case 3:
-                return Integer.toBinaryString(result);
+                return Long.toBinaryString(result);
         }
         return "";
     }
@@ -613,68 +680,71 @@ public class ProgrammerCal extends AppCompatActivity {
 
     // 최종 결과
     void result () {
-        int i = 0, j = 0;
+        try {
+            int i = 0, j = 0;
 
-        int leftBra = 0, rightBra = 0;
-        List<String> postfix_bracket;
+            int leftBra = 0, rightBra = 0;
+            List<String> postfix_bracket;
 
-        while (infixList.contains("(")){
-            leftBra = infixList.lastIndexOf("(");
-            rightBra = infixList.subList(leftBra, infixList.size()).indexOf(")") + leftBra;
-            postfix_bracket = infixToPostfix(infixList.subList(leftBra + 1, rightBra));
-            while (postfix_bracket.size() != 1) {
-                if (!isNumber(postfix_bracket.get(j))) {
-                    postfix_bracket.add(j - 2, calculate(postfix_bracket.remove(j - 2), postfix_bracket.remove(j - 2), postfix_bracket.remove(j - 2)));
-                    j = -1;
+            while (infixList.contains("(")) {
+                leftBra = infixList.lastIndexOf("(");
+                rightBra = infixList.subList(leftBra, infixList.size()).indexOf(")") + leftBra;
+                postfix_bracket = infixToPostfix(infixList.subList(leftBra + 1, rightBra));
+                while (postfix_bracket.size() != 1) {
+                    if (!isNumber(postfix_bracket.get(j))) {
+                        postfix_bracket.add(j - 2, calculate(postfix_bracket.remove(j - 2), postfix_bracket.remove(j - 2), postfix_bracket.remove(j - 2)));
+                        j = -1;
+                    }
+                    j++;
                 }
-                j++;
+                String brac_temp = postfix_bracket.remove(0);
+                for (int t = leftBra; t <= rightBra; t++) {
+                    infixList.remove(leftBra);
+                }
+                infixList.add(leftBra, brac_temp);
             }
-            String brac_temp = postfix_bracket.remove(0);
-            for(int t = leftBra; t <= rightBra; t++){
-                infixList.remove(leftBra);
+
+
+            infixToPostfix();
+            while (postfixList.size() != 1) {
+                if (!isNumber(postfixList.get(i))) {
+                    postfixList.add(i - 2, calculate(postfixList.remove(i - 2), postfixList.remove(i - 2), postfixList.remove(i - 2)));
+                    i = -1;
+                }
+                i++;
             }
-            infixList.add(leftBra, brac_temp);
-        }
 
-
-
-
-        infixToPostfix();
-        while (postfixList.size() != 1) {
-            if (!isNumber(postfixList.get(i))) {
-                postfixList.add(i - 2, calculate(postfixList.remove(i - 2), postfixList.remove(i - 2), postfixList.remove(i - 2)));
-                i = -1;
+            String temp = postfixList.remove(0);
+            long dec_temp = 0;
+            switch (cal_mode) {
+                case 0:
+                    dec_temp = Long.parseLong(temp, 16);
+                    break;
+                case 1:
+                    dec_temp = Long.parseLong(temp);
+                    break;
+                case 2:
+                    dec_temp = Long.parseLong(temp, 8);
+                    break;
+                case 3:
+                    dec_temp = Long.parseLong(temp, 2);
+                    break;
+                default:
+                    dec_temp = 0;
             }
-            i++;
-        }
 
-        String temp = postfixList.remove(0);
-        int dec_temp = 0;
-        switch(cal_mode){
-            case 0:
-                dec_temp = Integer.parseInt(temp, 16);
-                break;
-            case 1:
-                dec_temp = Integer.parseInt(temp);
-                break;
-            case 2:
-                dec_temp = Integer.parseInt(temp, 8);
-                break;
-            case 3:
-                dec_temp = Integer.parseInt(temp, 2);
-                break;
-            default:
-                dec_temp = 0;
+            result = dec_temp;
+            tv_Result.setText(temp);
+            rb_hex.setText("HEX\t\t\t" + Long.toHexString(dec_temp));
+            rb_dec.setText("DEC\t\t\t" + Long.valueOf(dec_temp));
+            rb_oct.setText("OCT\t\t\t" + Long.toOctalString(dec_temp));
+            rb_bin.setText("BIN\t\t\t" + Long.toBinaryString(dec_temp));
+            //tv_Result.setText(postfixList.remove(0));
+            infixList.clear();
+            resultSet = true;
+        } catch(Exception e){
+            init();
+            Toast.makeText(this, "오류가 발생하여 설정이 초기화됩니다.", Toast.LENGTH_SHORT).show();
         }
-
-        result = dec_temp;
-        tv_Result.setText(temp);
-        rb_hex.setText("HEX\t\t\t" + Integer.toHexString(dec_temp));
-        rb_dec.setText("DEC\t\t\t" + Integer.valueOf(dec_temp));
-        rb_oct.setText("OCT\t\t\t" + Integer.toOctalString(dec_temp));
-        rb_bin.setText("BIN\t\t\t" + Integer.toBinaryString(dec_temp));
-        //tv_Result.setText(postfixList.remove(0));
-        infixList.clear();
-        resultSet = true;
     }
 }
