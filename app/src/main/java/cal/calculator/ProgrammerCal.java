@@ -254,12 +254,16 @@ public class ProgrammerCal extends AppCompatActivity {
                 }
                 break;
         }
+        if(nli.size() >= 2){
+            tv_Expression.append(" ");
+        }
     }
 
     void init() {
         tv_Expression = findViewById(R.id.tv_expression);
         tv_Result = findViewById(R.id.tv_result);
         tv_Result.setText("0");
+        tv_Expression.setText("");
         checkList = new ArrayList<>();
         operatorStack = new Stack<>();
         infixList = new ArrayList<>();
