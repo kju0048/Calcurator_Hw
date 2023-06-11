@@ -75,8 +75,6 @@ public class DefaultCal extends AppCompatActivity implements SendEventListener{
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
-        String temps;
-
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction ft = manager.beginTransaction();
         Memory memory = new Memory();
@@ -90,6 +88,7 @@ public class DefaultCal extends AppCompatActivity implements SendEventListener{
         ft.commitAllowingStateLoss();
         return true;
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -650,6 +649,7 @@ public class DefaultCal extends AppCompatActivity implements SendEventListener{
 
 
     }
+
     public void sendMessage(int i) {
         if (i == -1){
             expSave.clear();
@@ -662,4 +662,5 @@ public class DefaultCal extends AppCompatActivity implements SendEventListener{
             checkList.add(-1);
         }
     }
+
 }
