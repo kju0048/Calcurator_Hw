@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#EAF0FF"
+    android:clickable="true"
     tools:context=".Memory">
     <ImageButton
         android:id="@+id/close_button"

@@ -37,7 +37,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 
-public class DefaultCal extends AppCompatActivity{
+public class DefaultCal extends AppCompatActivity implements SendEventListener{
 
     //SERVER
 
@@ -75,20 +75,6 @@ public class DefaultCal extends AppCompatActivity{
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         String temps;
-        try {
-            FileInputStream fis = openFileInput("MemoryClear");
-            byte[] buffer = new byte[fis.available()];
-            fis.read(buffer);
-            temps = new String(buffer);
-            fis.close();
-            if (temps.equals("1")){
-                changeMemory();
-                expSave.clear();
-                resultSave.clear();
-            }
-
-        } catch (IOException e) {
-        }
 
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction ft = manager.beginTransaction();
@@ -634,21 +620,6 @@ public class DefaultCal extends AppCompatActivity{
             int i = 0;
             String temps;
 
-            try {
-                FileInputStream fis = openFileInput("MemoryClear");
-                byte[] buffer = new byte[fis.available()];
-                fis.read(buffer);
-                temps = new String(buffer);
-                fis.close();
-                if (temps.equals("1")) {
-                    changeMemory();
-                    expSave.clear();
-                    resultSave.clear();
-                }
-
-            } catch (IOException e) {
-            }
-
             infixToPostfix();
             while (postfixList.size() != 1) {
                 if (!isNumber(postfixList.get(i))) {
@@ -677,14 +648,14 @@ public class DefaultCal extends AppCompatActivity{
 
 
     }
-
-    void changeMemory(){
-        try {
-            String FILENAME = "MemoryClear";
-            FileOutputStream fos = openFileOutput(FILENAME, Context.MODE_PRIVATE);
-            fos.write("0".getBytes());
-            fos.close();
-        } catch (IOException e) {
+    public void sendMessage(int i) {
+        if (i == -1){
+            expSave.clear();
+            resultSave.clear();
+        } else{
+            Toast.makeText(this, "AA", Toast.LENGTH_SHORT).show();
+            tv_Expression.setText(expSave.get(i));
+            tv_Result.setText(resultSave.get(i));
         }
     }
 }

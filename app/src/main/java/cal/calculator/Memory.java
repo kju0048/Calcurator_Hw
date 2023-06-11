@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -27,10 +28,22 @@ import java.util.ArrayList;
  * Use the {@link Memory#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Memory extends Fragment implements RecyclerViewAdapter.ItemClickListener, View.OnClickListener {
+public class Memory extends Fragment implements View.OnClickListener {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+
+    SendEventListener sendEventListener;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        try{
+            sendEventListener = (SendEventListener) context;
+        } catch (ClassCastException e){
+            throw new ClassCastException(context.toString() + " must implement SendEvent");
+        }
+    }
 
     String FILENAME = "";
 
@@ -118,11 +131,6 @@ public class Memory extends Fragment implements RecyclerViewAdapter.ItemClickLis
     }
 
     @Override
-    public void onItemClick(View view, int position) {
-
-    }
-
-    @Override
     public void onClick(View v) {
         int vId = v.getId();
         String arr1[] = {"아직 기록이 없음"}, arr2[] = {"XX"};
@@ -137,16 +145,7 @@ public class Memory extends Fragment implements RecyclerViewAdapter.ItemClickLis
             rv.removeItemDecoration(itemDecoration);
             RecyclerViewAdapter cAdapter = new RecyclerViewAdapter(getActivity(), arr1, arr2);
             rv.setAdapter(cAdapter);
-
-            try {
-                FILENAME = "MemoryClear";
-                FileOutputStream fos = getContext().openFileOutput(FILENAME, Context.MODE_PRIVATE);
-                fos.write("1".getBytes());
-                fos.close();
-            } catch (IOException e) {
-            }
-
-
+            sendEventListener.sendMessage(-1);
 
 
         }
