@@ -57,6 +57,7 @@ public class DefaultCal extends AppCompatActivity implements SendEventListener{
     List<String> postfixList; // 후위 표기
     ArrayList<String> expSave; // 계산식 저장
     ArrayList<String> resultSave; // 결과 저장
+    List<List<String>> infixSave;
 
     Boolean resultSet = false; // 마지막 동작이 = 인지
 
@@ -95,6 +96,7 @@ public class DefaultCal extends AppCompatActivity implements SendEventListener{
         setContentView(R.layout.activity_defcal);
 
         this.init();
+
 
 
 
@@ -653,9 +655,11 @@ public class DefaultCal extends AppCompatActivity implements SendEventListener{
             expSave.clear();
             resultSave.clear();
         } else{
-            Toast.makeText(this, "AA", Toast.LENGTH_SHORT).show();
             tv_Expression.setText(expSave.get(i));
             tv_Result.setText(resultSave.get(i));
+            infixList.clear();
+            resultSet = true;
+            checkList.add(-1);
         }
     }
 }

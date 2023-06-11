@@ -118,6 +118,13 @@ public class Memory extends Fragment implements View.OnClickListener {
 
         rAdapter = new RecyclerViewAdapter(getActivity(), array, array2);
 
+        rAdapter.setOnItemClickListener(new RecyclerViewAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View v, int position) {
+                sendEventListener.sendMessage(position);
+            }
+        });
+
 
         itemDecoration = new CustomDividerItemDecoration(10F, Color.DKGRAY);
         rv.addItemDecoration(itemDecoration);
